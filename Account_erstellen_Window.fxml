@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="370.0" prefWidth="533.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Pane layoutX="79.0" layoutY="57.0" prefHeight="257.0" prefWidth="404.0" style="-fx-border-color: #000000;">
+         <children>
+            <Button layoutX="202.0" layoutY="189.0" mnemonicParsing="false" text="Account erstellen" />
+            <TextField layoutX="117.0" layoutY="97.0" promptText="Username" />
+            <PasswordField layoutX="117.0" layoutY="151.0" promptText="Passwort" />
+            <ToggleButton layoutX="278.0" layoutY="151.0" mnemonicParsing="false" text="Show Password" />
+            <Label layoutX="87.0" layoutY="41.0" text="Account erstellen" textAlignment="CENTER">
+               <font>
+                  <Font size="33.0" />
+               </font>
+            </Label>
+            <Button layoutX="118.0" layoutY="189.0" mnemonicParsing="false" text="Abbrechen" />
+            <TextField layoutX="117.0" layoutY="124.0" promptText="Email" />
+         </children>
+      </Pane>
+   </children>
+</Pane>
