@@ -28,6 +28,7 @@ public class Controller implements Initializable {
         btn_createAccount.setOnAction(this::createAccountisClicked);
     }
 
+    @FXML
     private void createAccountisClicked(javafx.event.ActionEvent actionEvent) {
         tabPane_Main.getSelectionModel().select(1);
     }
