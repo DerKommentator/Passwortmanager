@@ -173,7 +173,7 @@
                                       </items>
                                     </ToolBar>
                                     <ListView minHeight="645.0" />
-                                    <Button alignment="CENTER" minHeight="50.0" minWidth="350.0" mnemonicParsing="false" text="+">
+                                    <Button fx:id="btn_addPassword" alignment="CENTER" minHeight="50.0" minWidth="350.0" mnemonicParsing="false" text="+">
                                        <VBox.margin>
                                           <Insets bottom="10.0" left="50.0" top="10.0" />
                                        </VBox.margin>
@@ -210,7 +210,7 @@
                                           <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="5">
                                              <children>
                                                 <Region minHeight="300.0" />
-                                                <Button alignment="CENTER" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" mnemonicParsing="false" text="Edit">
+                                                <Button fx:id="btn_editInfo" alignment="CENTER" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" mnemonicParsing="false" text="Edit">
                                                    <VBox.margin>
                                                       <Insets left="12.0" />
                                                    </VBox.margin>
@@ -265,6 +265,170 @@
                      </center>
                   </BorderPane>
                </content></Tab>
+            <Tab text="Neue Website">
+               <content>
+                  <BorderPane>
+                     <top>
+                        <Region minHeight="200.0" BorderPane.alignment="CENTER" />
+                     </top>
+                     <left>
+                        <Region minWidth="350.0" BorderPane.alignment="CENTER" />
+                     </left>
+                     <right>
+                        <Region minWidth="350.0" BorderPane.alignment="CENTER" />
+                     </right>
+                     <bottom>
+                        <Region minHeight="100.0" BorderPane.alignment="CENTER" />
+                     </bottom>
+                     <center>
+                        <VBox BorderPane.alignment="CENTER">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Informationen: ">
+                                 <font>
+                                    <Font size="31.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="150.0" />
+                                 </VBox.margin>
+                              </Text>
+                              <GridPane>
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" />
+                                  <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints vgrow="SOMETIMES" />
+                                  <RowConstraints vgrow="SOMETIMES" />
+                                  <RowConstraints vgrow="SOMETIMES" />
+                                    <RowConstraints vgrow="SOMETIMES" />
+                                    <RowConstraints vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Button fx:id="btn_createNewPassword" mnemonicParsing="false" text="Hinzufügen" GridPane.rowIndex="4">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </Button>
+                                    <Label text="Name:" />
+                                    <Label text="Website:" GridPane.rowIndex="1" />
+                                    <Label text="Username:" GridPane.rowIndex="2" />
+                                    <Label text="Passwort:" GridPane.rowIndex="3" />
+                                    <TextField minWidth="300.0" GridPane.columnIndex="1">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </TextField>
+                                    <TextField minWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </TextField>
+                                    <TextField GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </TextField>
+                                    <TextField GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </TextField>
+                                    <Button mnemonicParsing="false" text="Anzeigen" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                                       <GridPane.margin>
+                                          <Insets left="10.0" />
+                                       </GridPane.margin>
+                                    </Button>
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </VBox>
+                     </center>
+                  </BorderPane>
+               </content>
+            </Tab>
+            <Tab text="Website Bearbeiten">
+               <content>
+                  <BorderPane>
+                     <top>
+                        <Region minHeight="200.0" BorderPane.alignment="CENTER" />
+                     </top>
+                     <left>
+                        <Region minWidth="350.0" BorderPane.alignment="CENTER" />
+                     </left>
+                     <right>
+                        <Region minWidth="350.0" BorderPane.alignment="CENTER" />
+                     </right>
+                     <bottom>
+                        <Region minHeight="100.0" BorderPane.alignment="CENTER" />
+                     </bottom>
+                     <center>
+                        <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Informationen bearbeiten: ">
+                                 <font>
+                                    <Font size="31.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="90.0" />
+                                 </VBox.margin>
+                              </Text>
+                              <GridPane>
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints vgrow="SOMETIMES" />
+                                    <RowConstraints vgrow="SOMETIMES" />
+                                    <RowConstraints vgrow="SOMETIMES" />
+                                    <RowConstraints vgrow="SOMETIMES" />
+                                    <RowConstraints vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Button fx:id="btn_changeInfo" mnemonicParsing="false" text="Bearbeiten" GridPane.rowIndex="4">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </Button>
+                                    <Label text="Name:" />
+                                    <Label text="Website:" GridPane.rowIndex="1" />
+                                    <Label text="Username:" GridPane.rowIndex="2" />
+                                    <Label text="Passwort:" GridPane.rowIndex="3" />
+                                    <TextField minWidth="300.0" GridPane.columnIndex="1">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </TextField>
+                                    <TextField minWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </TextField>
+                                    <TextField GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </TextField>
+                                    <TextField GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </TextField>
+                                    <Button mnemonicParsing="false" text="Anzeigen" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                                       <GridPane.margin>
+                                          <Insets left="10.0" />
+                                       </GridPane.margin>
+                                    </Button>
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </VBox>
+                     </center>
+                  </BorderPane>
+               </content>
+            </Tab>
         </tabs>
       </TabPane>
    </center>
