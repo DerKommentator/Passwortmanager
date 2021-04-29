@@ -114,18 +114,18 @@
                                  </GridPane.margin>
                               </Label>
                               <Button fx:id="btn_cancelCreateAccount" minHeight="20.0" minWidth="145.0" mnemonicParsing="false" text="Abbrechen" GridPane.rowIndex="4" />
-                              <TextField maxHeight="25.0" maxWidth="300.0" promptText="Username" GridPane.rowIndex="1">
+                              <TextField fx:id="txtfld_createAccountUsername" maxHeight="25.0" maxWidth="300.0" promptText="Username" GridPane.rowIndex="1">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
                               </TextField>
-                              <PasswordField maxHeight="25.0" maxWidth="300.0" promptText="Passwort" GridPane.rowIndex="3" />
+                              <PasswordField fx:id="txtfld_createAccountPassword" maxHeight="25.0" maxWidth="300.0" promptText="Passwort" GridPane.rowIndex="3" />
                               <ToggleButton mnemonicParsing="false" text="Passwort anzeigen" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                  <GridPane.margin>
                                     <Insets left="10.0" />
                                  </GridPane.margin>
                               </ToggleButton>
-                              <TextField promptText="Email" GridPane.rowIndex="2" />
+                              <TextField fx:id="txtfld_createAccountEmail" promptText="Email" GridPane.rowIndex="2" />
                            </children>
                         </GridPane>
                      </center>
@@ -232,29 +232,29 @@
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
                                              </GridPane.margin></Button>
-                                          <TextField minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                          <TextField fx:id="txtfld_informationPassword" minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                              <GridPane.margin>
                                                 <Insets bottom="10.0" top="10.0" />
                                              </GridPane.margin>
                                           </TextField>
-                                          <TextField minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                          <TextField fx:id="txtfld_informationName" minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                              <GridPane.margin>
                                                 <Insets bottom="10.0" top="10.0" />
                                              </GridPane.margin>
                                           </TextField>
-                                          <TextField minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                          <TextField fx:id="txtfld_informationWebsite" minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                              <GridPane.margin>
                                                 <Insets bottom="10.0" top="10.0" />
                                              </GridPane.margin>
                                           </TextField>
-                                          <TextField minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                          <TextField fx:id="txtfld_informationEmail" minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                              <GridPane.margin>
                                                 <Insets bottom="10.0" top="10.0" />
                                              </GridPane.margin>
                                           </TextField>
-                                          <Label text="Name:" GridPane.rowIndex="1" />
+                                          <Label text="Email:" GridPane.rowIndex="1" />
                                           <Label text="Website:" GridPane.rowIndex="2" />
-                                          <Label text="Username:" GridPane.rowIndex="3" />
+                                          <Label text="Name:" GridPane.rowIndex="3" />
                                           <Label text="Passwort:" GridPane.rowIndex="4" />
                                        </children>
                                     </GridPane>

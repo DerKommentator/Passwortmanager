@@ -2,10 +2,14 @@ package application;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TabPane;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TextField;
+import model.datenstruktur.Account;
+import model.datenstruktur.Website;
 
 public class Controller implements Initializable {
 
@@ -39,6 +43,28 @@ public class Controller implements Initializable {
     @FXML
     private Button btn_addPassword;
 
+    @FXML
+    private TextField txtfld_createAccountUsername;
+
+    @FXML
+    private PasswordField txtfld_createAccountPassword;
+
+    @FXML
+    private TextField txtfld_createAccountEmail;
+
+    @FXML
+    private TextField txtfld_informationPassword;
+
+    @FXML
+    private TextField txtfld_informationName;
+
+    @FXML
+    private TextField txtfld_informationWebsite;
+
+    @FXML
+    private TextField txtfld_informationEmail;
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         btn_createAccount.setOnAction(this::createAccountisClicked);
@@ -70,13 +96,29 @@ public class Controller implements Initializable {
     @FXML
     private void createAccountInTabIsClicked(javafx.event.ActionEvent actionEvent) {
         tabPane_Main.getSelectionModel().select(0);
-        System.out.println("Account wurde erstellt...");
+
+        // Daten aus Textfelder holen
+        String username = txtfld_createAccountUsername.getText();
+        String email = txtfld_createAccountEmail.getText();
+        String password = txtfld_createAccountPassword.getText();
+
+        if(username != null && email != null && password != null){
+            Account erstellterAccount = new Account(username, email , password);
+            System.out.println("Der Account wurde erfolgreich erstellt.");
+            System.out.println("Username: " + erstellterAccount.getUsername());
+            System.out.println("Email: " + erstellterAccount.getEmail());
+            System.out.println("Passwort: " + erstellterAccount.getPassword());
+        } else {
+            System.out.println("Der Account konnte nicht erstellt werden, da die Textfelder ausgefüllt werden müssen.");
+        }
     }
 
     // Login
     @FXML
     private void loginIsClicked(javafx.event.ActionEvent actionEvent) {
         tabPane_Main.getSelectionModel().select(2);
+
+
         System.out.println("Login erfolgreich.");
     }
 
@@ -91,7 +133,23 @@ public class Controller implements Initializable {
     @FXML
     private void createNewPasswordIsClicked(javafx.event.ActionEvent actionEvent) {
         tabPane_Main.getSelectionModel().select(2);
-        System.out.println("Neues Passwort hinzugefügt.");
+
+        // Daten aus Textfelder holen
+        String email = txtfld_informationEmail.getText();
+        String website = txtfld_informationWebsite.getText();
+        String name = txtfld_informationName.getText();
+        String password = txtfld_informationPassword.getText();
+
+        if(email != null && website != null && name != null && password != null){
+            Website erstellteWebsite = new Website(email, website , name, password);
+            System.out.println("Die Website wurde erfolgreich hinzugefügt.");
+            System.out.println("Email: " + erstellteWebsite.getEmail());
+            System.out.println("Website: " + erstellteWebsite.getWebsite());
+            System.out.println("Name: " + erstellteWebsite.getName());
+            System.out.println("Passwort: " + erstellteWebsite.getPassword());
+        } else {
+            System.out.println("Die Website konnte nicht hinzugefügt werden, da die Textfelder ausgefüllt werden müssen.");
+        }
     }
 
     // Passwort in Info-Tab hinzufügen (Ohne Hinzufügen)
