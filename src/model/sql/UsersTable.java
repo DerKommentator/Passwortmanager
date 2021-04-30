@@ -19,7 +19,7 @@ public class UsersTable {
             String columnName = entry.getKey();
             Datatypes datatype = entry.getValue();
 
-            if (columnName.equals("id")) {
+            if (columnName.equals("username")) {
                 sqlBody.append(String.format("%s %s PRIMARY KEY,", columnName, datatype.toString()));
             }
             else {
@@ -50,16 +50,17 @@ public class UsersTable {
     }
 
     // TODO: password hashen / verschluesseln
-    public static void insert(Connection conn, String username, String password) {
-        String sql = "INSERT INTO users (username, password) VALUES (?,?)";
+    public static void insert(Connection conn, String username, String email, String password) {
+        String sql = "INSERT INTO users (username, email, password) VALUES (?,?,?)";
 
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setString(1, username);
-            preparedStatement.setString(2, password);
+            preparedStatement.setString(2, email);
+            preparedStatement.setString(3, password);
             preparedStatement.executeUpdate();
 
-            System.out.println("Ein neuer Eintrag wurde hinzugefügt");
+            System.out.println("Ein neuer Eintrag wurde hinzugefügt: " + preparedStatement.toString());
 
         } catch (SQLException e) {
             System.out.println("ERROR - DB insert: " + e.getMessage());
