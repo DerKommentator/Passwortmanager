@@ -5,11 +5,19 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TabPane;
 import java.net.URL;
+import java.sql.Connection;
+import java.util.LinkedHashMap;
 import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import model.datenstruktur.Account;
 import model.datenstruktur.Website;
+import model.sql.Database;
+import model.sql.TestController;
+import model.sql.UsersTable;
+import model.sql.WebsiteTable;
+
+import javax.jws.soap.SOAPBinding;
 
 public class Controller implements Initializable {
 
@@ -81,6 +89,16 @@ public class Controller implements Initializable {
     // Account-Erstellungs Button beim Login
     @FXML
     private void createAccountisClicked(javafx.event.ActionEvent actionEvent) {
+        LinkedHashMap<String, UsersTable.Datatypes> columns = new LinkedHashMap<>();
+        columns.put("id", UsersTable.Datatypes.integer);
+        columns.put("username", UsersTable.Datatypes.text);
+        columns.put("email", UsersTable.Datatypes.text);
+        columns.put("password", UsersTable.Datatypes.text);
+
+        Connection conn = Database.createDatabaseConnection("users.db");
+        UsersTable.createNewTable(conn, "users", columns);
+        Database.closeDatabase(conn);
+
         tabPane_Main.getSelectionModel().select(1);
         System.out.println("Account kann nun erstellt werden.");
     }
@@ -108,6 +126,11 @@ public class Controller implements Initializable {
             System.out.println("Username: " + erstellterAccount.getUsername());
             System.out.println("Email: " + erstellterAccount.getEmail());
             System.out.println("Passwort: " + erstellterAccount.getPassword());
+
+            Connection conn = Database.createDatabaseConnection("users.db");
+            UsersTable.insert(conn, erstellterAccount.getUsername(), erstellterAccount.getEmail(), erstellterAccount.getPassword());
+            Database.closeDatabase(conn);
+
         } else {
             System.out.println("Der Account konnte nicht erstellt werden, da die Textfelder ausgefüllt werden müssen.");
         }
@@ -147,6 +170,11 @@ public class Controller implements Initializable {
             System.out.println("Website: " + erstellteWebsite.getWebsite());
             System.out.println("Name: " + erstellteWebsite.getName());
             System.out.println("Passwort: " + erstellteWebsite.getPassword());
+
+            Connection conn = Database.createDatabaseConnection("users.db");
+            WebsiteTable.insert(conn, erstellteWebsite.getEmail(), erstellteWebsite.getWebsite(), erstellteWebsite.getName(), erstellteWebsite.getPassword());
+            Database.closeDatabase(conn);
+
         } else {
             System.out.println("Die Website konnte nicht hinzugefügt werden, da die Textfelder ausgefüllt werden müssen.");
         }
@@ -155,6 +183,17 @@ public class Controller implements Initializable {
     // Passwort in Info-Tab hinzufügen (Ohne Hinzufügen)
     @FXML
     private void addPasswordIsClicked(javafx.event.ActionEvent actionEvent) {
+        LinkedHashMap<String, WebsiteTable.Datatypes> columns = new LinkedHashMap<>();
+        columns.put("id", WebsiteTable.Datatypes.integer);
+        columns.put("email", WebsiteTable.Datatypes.text);
+        columns.put("website", WebsiteTable.Datatypes.text);
+        columns.put("username", WebsiteTable.Datatypes.text);
+        columns.put("password", WebsiteTable.Datatypes.text);
+
+        Connection conn = Database.createDatabaseConnection("users.db");
+        WebsiteTable.createNewTable(conn, "websites", columns);
+        Database.closeDatabase(conn);
+
         tabPane_Main.getSelectionModel().select(3);
         System.out.println("Neues Passwort kann hinzugefügt werden.");
     }

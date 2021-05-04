@@ -23,9 +23,9 @@ public class TestController {
         queryColumns.add("username");
         queryColumns.add("password");
 
-        Connection conn = Database.createNewDatabase("I:\\IntelliJ_IDEA\\Projects\\Passwortmanager\\src\\application\\test.db");
+        Connection conn = Database.createDatabaseConnection("I:\\IntelliJ_IDEA\\Projects\\Passwortmanager\\src\\application\\test.db");
         UsersTable.createNewTable(conn, "users", columns);
-        UsersTable.insert(conn, "testuser", "123456");
+        UsersTable.insert(conn, "testuser", "test@gmx.de", "123456");
         LinkedHashMap<String, String> queryResult = UsersTable.query(conn, queryColumns);
         for (Map.Entry<String, String> entry: queryResult.entrySet()) {
             String columnName = entry.getKey();

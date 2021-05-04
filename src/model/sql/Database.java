@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Database {
-    public static Connection createNewDatabase(String filePath) {
+    public static Connection createDatabaseConnection(String filePath) {
         String url = "jdbc:sqlite:" + filePath;
         Connection conn = null;
         try {
@@ -22,5 +22,13 @@ public class Database {
             System.out.println("DB: " + e.getMessage());
         }
         return conn;
+    }
+
+    public static void closeDatabase(Connection conn) {
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("ERROR - DB close: " + e.getMessage());
+        }
     }
 }

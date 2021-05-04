@@ -232,22 +232,22 @@
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
                                              </GridPane.margin></Button>
-                                          <TextField fx:id="txtfld_informationPassword" minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                          <TextField minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                              <GridPane.margin>
                                                 <Insets bottom="10.0" top="10.0" />
                                              </GridPane.margin>
                                           </TextField>
-                                          <TextField fx:id="txtfld_informationName" minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                          <TextField minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                              <GridPane.margin>
                                                 <Insets bottom="10.0" top="10.0" />
                                              </GridPane.margin>
                                           </TextField>
-                                          <TextField fx:id="txtfld_informationWebsite" minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                          <TextField minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                              <GridPane.margin>
                                                 <Insets bottom="10.0" top="10.0" />
                                              </GridPane.margin>
                                           </TextField>
-                                          <TextField fx:id="txtfld_informationEmail" minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                          <TextField minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                              <GridPane.margin>
                                                 <Insets bottom="10.0" top="10.0" />
                                              </GridPane.margin>
@@ -310,26 +310,21 @@
                                           <Insets bottom="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </Button>
-                                    <Label text="Name:" />
+                                    <Label text="Email:" />
                                     <Label text="Website:" GridPane.rowIndex="1" />
                                     <Label text="Username:" GridPane.rowIndex="2" />
                                     <Label text="Passwort:" GridPane.rowIndex="3" />
-                                    <TextField minWidth="300.0" GridPane.columnIndex="1">
+                                    <TextField fx:id="txtfld_informationEmail" minWidth="300.0" GridPane.columnIndex="1">
                                        <GridPane.margin>
                                           <Insets bottom="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </TextField>
-                                    <TextField minWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    <TextField fx:id="txtfld_informationWebsite" minWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                        <GridPane.margin>
                                           <Insets bottom="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </TextField>
-                                    <TextField GridPane.columnIndex="1" GridPane.rowIndex="2">
-                                       <GridPane.margin>
-                                          <Insets bottom="5.0" top="5.0" />
-                                       </GridPane.margin>
-                                    </TextField>
-                                    <TextField GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                    <TextField fx:id="txtfld_informationName" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                        <GridPane.margin>
                                           <Insets bottom="5.0" top="5.0" />
                                        </GridPane.margin>
@@ -339,6 +334,11 @@
                                           <Insets left="10.0" />
                                        </GridPane.margin>
                                     </Button>
+                                    <PasswordField fx:id="txtfld_informationPassword" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </PasswordField>
                                  </children>
                               </GridPane>
                            </children>
@@ -392,7 +392,7 @@
                                           <Insets bottom="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </Button>
-                                    <Label text="Name:" />
+                                    <Label text="Email:" />
                                     <Label text="Website:" GridPane.rowIndex="1" />
                                     <Label text="Username:" GridPane.rowIndex="2" />
                                     <Label text="Passwort:" GridPane.rowIndex="3" />

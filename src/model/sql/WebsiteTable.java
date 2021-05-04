@@ -1,11 +1,9 @@
 package model.sql;
 
-import org.sqlite.mc.SQLiteMCChacha20Config;
-
 import java.sql.*;
 import java.util.*;
 
-public class UsersTable {
+public class WebsiteTable {
 
     public enum Datatypes {
         integer,
@@ -50,14 +48,15 @@ public class UsersTable {
     }
 
     // TODO: password hashen / verschluesseln
-    public static void insert(Connection conn, String username, String email, String password) {
-        String sql = "INSERT INTO users (username, email, password) VALUES (?,?,?)";
+    public static void insert(Connection conn, String email, String website, String username, String password) {
+        String sql = "INSERT INTO websites (email, website, username, password) VALUES (?,?,?,?)";
 
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
-            preparedStatement.setString(1, username);
-            preparedStatement.setString(2, email);
-            preparedStatement.setString(3, password);
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, website);
+            preparedStatement.setString(3, username);
+            preparedStatement.setString(4, password);
             preparedStatement.executeUpdate();
 
             System.out.println("Ein neuer Eintrag wurde hinzugefügt: " + preparedStatement.toString());
@@ -75,7 +74,7 @@ public class UsersTable {
             sql.append(columnName).append(",");
         }
         String sqlCutted = sql.substring(0, sql.length() - 1);
-        String sqlQuery = sqlCutted + " FROM users;";
+        String sqlQuery = sqlCutted + " FROM websites;";
 
         System.out.println(sqlQuery);
 
@@ -95,6 +94,4 @@ public class UsersTable {
 
         return queryResults;
     }
-
-
 }
