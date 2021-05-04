@@ -15,6 +15,7 @@ import model.datenstruktur.Website;
 import model.sql.Database;
 import model.sql.TestController;
 import model.sql.UsersTable;
+import model.sql.WebsiteTable;
 
 import javax.jws.soap.SOAPBinding;
 
@@ -94,7 +95,7 @@ public class Controller implements Initializable {
         columns.put("email", UsersTable.Datatypes.text);
         columns.put("password", UsersTable.Datatypes.text);
 
-        Connection conn = Database.createDatabaseConnection("I:\\IntelliJ_IDEA\\Projects\\Passwortmanager\\src\\application\\users.db");
+        Connection conn = Database.createDatabaseConnection("users.db");
         UsersTable.createNewTable(conn, "users", columns);
         Database.closeDatabase(conn);
 
@@ -126,7 +127,7 @@ public class Controller implements Initializable {
             System.out.println("Email: " + erstellterAccount.getEmail());
             System.out.println("Passwort: " + erstellterAccount.getPassword());
 
-            Connection conn = Database.createDatabaseConnection("I:\\IntelliJ_IDEA\\Projects\\Passwortmanager\\src\\application\\users.db");
+            Connection conn = Database.createDatabaseConnection("users.db");
             UsersTable.insert(conn, erstellterAccount.getUsername(), erstellterAccount.getEmail(), erstellterAccount.getPassword());
             Database.closeDatabase(conn);
 
@@ -169,6 +170,11 @@ public class Controller implements Initializable {
             System.out.println("Website: " + erstellteWebsite.getWebsite());
             System.out.println("Name: " + erstellteWebsite.getName());
             System.out.println("Passwort: " + erstellteWebsite.getPassword());
+
+            Connection conn = Database.createDatabaseConnection("users.db");
+            WebsiteTable.insert(conn, erstellteWebsite.getEmail(), erstellteWebsite.getWebsite(), erstellteWebsite.getName(), erstellteWebsite.getPassword());
+            Database.closeDatabase(conn);
+
         } else {
             System.out.println("Die Website konnte nicht hinzugefügt werden, da die Textfelder ausgefüllt werden müssen.");
         }
@@ -177,6 +183,17 @@ public class Controller implements Initializable {
     // Passwort in Info-Tab hinzufügen (Ohne Hinzufügen)
     @FXML
     private void addPasswordIsClicked(javafx.event.ActionEvent actionEvent) {
+        LinkedHashMap<String, WebsiteTable.Datatypes> columns = new LinkedHashMap<>();
+        columns.put("id", WebsiteTable.Datatypes.integer);
+        columns.put("email", WebsiteTable.Datatypes.text);
+        columns.put("website", WebsiteTable.Datatypes.text);
+        columns.put("username", WebsiteTable.Datatypes.text);
+        columns.put("password", WebsiteTable.Datatypes.text);
+
+        Connection conn = Database.createDatabaseConnection("users.db");
+        WebsiteTable.createNewTable(conn, "websites", columns);
+        Database.closeDatabase(conn);
+
         tabPane_Main.getSelectionModel().select(3);
         System.out.println("Neues Passwort kann hinzugefügt werden.");
     }
