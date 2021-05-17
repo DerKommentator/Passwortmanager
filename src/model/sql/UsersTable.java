@@ -1,17 +1,15 @@
 package model.sql;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import model.datenstruktur.Account;
 import org.sqlite.mc.SQLiteMCChacha20Config;
 
+import java.nio.file.Path;
+import java.security.AccessControlContext;
 import java.sql.*;
 import java.util.*;
 
 public class UsersTable {
-
-    public enum Datatypes {
-        integer,
-        text
-    }
-
     public static void createNewTable(Connection conn, String tableName, LinkedHashMap<String, Datatypes> columns) {
         StringBuilder sqlBody = new StringBuilder();
 
@@ -50,14 +48,15 @@ public class UsersTable {
     }
 
     // TODO: password hashen / verschluesseln
-    public static void insert(Connection conn, String username, String email, String password) {
-        String sql = "INSERT INTO users (username, email, password) VALUES (?,?,?)";
+    public static void insert(Connection conn, String username, String email, String password, String dbPath) {
+        String sql = "INSERT INTO users (username, email, password, dbPath) VALUES (?,?,?,?)";
 
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, email);
             preparedStatement.setString(3, password);
+            preparedStatement.setString(4, dbPath);
             preparedStatement.executeUpdate();
 
             System.out.println("Ein neuer Eintrag wurde hinzugefügt: " + preparedStatement.toString());
@@ -65,6 +64,32 @@ public class UsersTable {
         } catch (SQLException e) {
             System.out.println("ERROR - DB insert: " + e.getMessage());
         }
+    }
+
+    public static Boolean insertNewUser(Connection conn, Account user) {
+        String username = user.getUsername();
+        String email = user.getEmail();
+        String hashedPassword = user.getPassword();
+        String dbPath = user.getDBPath();
+
+        String sql = "INSERT INTO users (username, email, password, dbPath) VALUES (?,?,?,?)";
+
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, email);
+            preparedStatement.setString(3, hashedPassword);
+            preparedStatement.setString(4, dbPath);
+            preparedStatement.executeUpdate();
+
+            System.out.println("Ein neuer Eintrag wurde hinzugefügt: " + preparedStatement.toString());
+
+            return true;
+        } catch (SQLException e) {
+            System.out.println("ERROR - DB insertNewUser: " + e.getMessage());
+        }
+
+        return false;
     }
 
     public static LinkedHashMap<String, String> query(Connection conn, List<String> columnNames) {
@@ -94,6 +119,32 @@ public class UsersTable {
         }
 
         return queryResults;
+    }
+
+    public static List<Object> querySqlStatement(Connection conn, String sql) {
+        System.out.println(sql);
+        List<Object> queryReturn = new ArrayList<Object>();
+
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            ResultSetMetaData resultSetMetaData = rs.getMetaData();
+            final int columnCount = resultSetMetaData.getColumnCount();
+
+            while (rs.next()) {
+                Object[] values = new Object[columnCount];
+                for (int i = 1; i <= columnCount; i++) {
+                    values[i - 1] = rs.getObject(i);
+                }
+                queryReturn.add(values);
+                System.out.println(Arrays.toString(values));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("ERROR - DB querySqlStatement: " + e.getMessage());
+        }
+
+        return queryReturn;
     }
 
 

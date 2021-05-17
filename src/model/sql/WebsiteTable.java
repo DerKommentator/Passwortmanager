@@ -4,12 +4,6 @@ import java.sql.*;
 import java.util.*;
 
 public class WebsiteTable {
-
-    public enum Datatypes {
-        integer,
-        text
-    }
-
     public static void createNewTable(Connection conn, String tableName, LinkedHashMap<String, Datatypes> columns) {
         StringBuilder sqlBody = new StringBuilder();
 
@@ -17,7 +11,7 @@ public class WebsiteTable {
             String columnName = entry.getKey();
             Datatypes datatype = entry.getValue();
 
-            if (columnName.equals("username")) {
+            if (columnName.equals("id")) {
                 sqlBody.append(String.format("%s %s PRIMARY KEY,", columnName, datatype.toString()));
             }
             else {
@@ -74,7 +68,7 @@ public class WebsiteTable {
             sql.append(columnName).append(",");
         }
         String sqlCutted = sql.substring(0, sql.length() - 1);
-        String sqlQuery = sqlCutted + " FROM websites;";
+        String sqlQuery = sqlCutted + " FROM data;";
 
         System.out.println(sqlQuery);
 

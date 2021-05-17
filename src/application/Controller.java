@@ -1,21 +1,21 @@
 package application;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
+
 import java.net.URL;
+import java.nio.file.Path;
 import java.sql.Connection;
-import java.util.LinkedHashMap;
-import java.util.ResourceBundle;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
+
 import javafx.fxml.Initializable;
-import javafx.scene.control.TextField;
 import model.datenstruktur.Account;
 import model.datenstruktur.Website;
-import model.sql.Database;
-import model.sql.TestController;
-import model.sql.UsersTable;
-import model.sql.WebsiteTable;
+import model.sql.*;
+import utils.BCrypt;
 
 import javax.jws.soap.SOAPBinding;
 
@@ -23,6 +23,12 @@ public class Controller implements Initializable {
 
     @FXML
     private TabPane tabPane_Main;
+
+    @FXML
+    private TextField field_username;
+
+    @FXML
+    private PasswordField field_password;
 
     @FXML
     private Button btn_login;
@@ -50,6 +56,9 @@ public class Controller implements Initializable {
 
     @FXML
     private Button btn_addPassword;
+
+    @FXML
+    private ListView<String> listView_dashboardListEntries;
 
     @FXML
     private TextField txtfld_createAccountUsername;
@@ -89,11 +98,11 @@ public class Controller implements Initializable {
     // Account-Erstellungs Button beim Login
     @FXML
     private void createAccountisClicked(javafx.event.ActionEvent actionEvent) {
-        LinkedHashMap<String, UsersTable.Datatypes> columns = new LinkedHashMap<>();
-        columns.put("id", UsersTable.Datatypes.integer);
-        columns.put("username", UsersTable.Datatypes.text);
-        columns.put("email", UsersTable.Datatypes.text);
-        columns.put("password", UsersTable.Datatypes.text);
+        LinkedHashMap<String, Datatypes> columns = new LinkedHashMap<>();
+        columns.put("username", Datatypes.text);
+        columns.put("email", Datatypes.text);
+        columns.put("password", Datatypes.text);
+        columns.put("dbPath", Datatypes.text);
 
         Connection conn = Database.createDatabaseConnection("users.db");
         UsersTable.createNewTable(conn, "users", columns);
@@ -113,37 +122,106 @@ public class Controller implements Initializable {
     // Account-Erstellung
     @FXML
     private void createAccountInTabIsClicked(javafx.event.ActionEvent actionEvent) {
-        tabPane_Main.getSelectionModel().select(0);
-
         // Daten aus Textfelder holen
         String username = txtfld_createAccountUsername.getText();
         String email = txtfld_createAccountEmail.getText();
         String password = txtfld_createAccountPassword.getText();
 
-        if(username != null && email != null && password != null){
-            Account erstellterAccount = new Account(username, email , password);
-            System.out.println("Der Account wurde erfolgreich erstellt.");
-            System.out.println("Username: " + erstellterAccount.getUsername());
-            System.out.println("Email: " + erstellterAccount.getEmail());
-            System.out.println("Passwort: " + erstellterAccount.getPassword());
+        if(!username.isEmpty() && !email.isEmpty() && !password.isEmpty()){
+            String generatedSecurePasswordHash = BCrypt.hashpw(password, BCrypt.gensalt(12));
+            String usersPasswordDBPath = username + ".db";
+            Account erstellterAccount = new Account(username, email , generatedSecurePasswordHash, usersPasswordDBPath);
 
-            Connection conn = Database.createDatabaseConnection("users.db");
-            UsersTable.insert(conn, erstellterAccount.getUsername(), erstellterAccount.getEmail(), erstellterAccount.getPassword());
-            Database.closeDatabase(conn);
+            if (isRegistered(erstellterAccount)) {
+                tabPane_Main.getSelectionModel().select(0);
+            } else {
+                System.out.println("Der Account konnte nicht erstellt werden.");
+            }
 
         } else {
             System.out.println("Der Account konnte nicht erstellt werden, da die Textfelder ausgefüllt werden müssen.");
         }
     }
 
+    public Boolean isRegistered(Account user) {
+        Connection conn = Database.createDatabaseConnection("users.db");
+        if (UsersTable.insertNewUser(conn, user)) {
+            System.out.println("Der Account wurde erfolgreich erstellt.");
+            Database.closeDatabase(conn);
+
+            //TODO: check if username is users - conflicts with users.db
+            //TODO: autoincrement in users.db for id -> FIXED: use rowid instead of id column
+
+            try {
+                Connection websiteConn = Database.createDatabaseConnection(user.getDBPath());
+                LinkedHashMap<String, Datatypes> columns = new LinkedHashMap<>();
+                columns.put("id", Datatypes.integer);
+                columns.put("name", Datatypes.text);
+                columns.put("email", Datatypes.text);
+                columns.put("website", Datatypes.text);
+                columns.put("username", Datatypes.text);
+                columns.put("password", Datatypes.text);
+                WebsiteTable.createNewTable(websiteConn, "data", columns);
+            } catch (Exception e) {
+                System.out.println("Registration - CreateWebsiteDB: " + e.getMessage());
+                return false;
+            }
+
+            return true;
+        }
+        System.out.println("Der Account konnte nicht erstellt werden, da die Textfelder ausgefüllt werden müssen.");
+        return false;
+    }
+
     // Login
     @FXML
     private void loginIsClicked(javafx.event.ActionEvent actionEvent) {
-        tabPane_Main.getSelectionModel().select(2);
-
-
-        System.out.println("Login erfolgreich.");
+        String username = field_username.getText();
+        String password = field_password.getText();
+        if (!username.isEmpty() && !password.isEmpty()) {
+            if (isLogin(username, password)) {
+                System.out.println("Login erfolgreich.");
+                tabPane_Main.getSelectionModel().select(2);
+                getDatabaseEntries(username + ".db");
+            }
+            else {
+                System.out.println("Login fehlgeschlagen.");
+            }
+        } else {
+            System.out.println("Username oder Password sind leer.");
+        }
     }
+
+    public boolean isLogin(String username, String password) {
+        PreparedStatement preparedStatement;
+        ResultSet resultSet;
+        String generatedSecurePasswordHash = BCrypt.hashpw(password, BCrypt.gensalt(12));
+        System.out.println(generatedSecurePasswordHash);
+
+        String query = "SELECT password FROM users WHERE username = ?";
+        Connection conn = null;
+
+        try {
+            conn = Database.createDatabaseConnection("users.db");
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, username);
+
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                String userPassword = resultSet.getString("password");
+                return BCrypt.checkpw(password, userPassword);
+            }
+
+        } catch (Exception e) {
+            System.out.println("Login Error: " + e.getMessage());
+            return false;
+        } finally {
+            assert conn != null;
+            Database.closeDatabase(conn);
+        }
+        return false;
+    }
+
 
     // Logut
     @FXML
@@ -183,17 +261,6 @@ public class Controller implements Initializable {
     // Passwort in Info-Tab hinzufügen (Ohne Hinzufügen)
     @FXML
     private void addPasswordIsClicked(javafx.event.ActionEvent actionEvent) {
-        LinkedHashMap<String, WebsiteTable.Datatypes> columns = new LinkedHashMap<>();
-        columns.put("id", WebsiteTable.Datatypes.integer);
-        columns.put("email", WebsiteTable.Datatypes.text);
-        columns.put("website", WebsiteTable.Datatypes.text);
-        columns.put("username", WebsiteTable.Datatypes.text);
-        columns.put("password", WebsiteTable.Datatypes.text);
-
-        Connection conn = Database.createDatabaseConnection("users.db");
-        WebsiteTable.createNewTable(conn, "websites", columns);
-        Database.closeDatabase(conn);
-
         tabPane_Main.getSelectionModel().select(3);
         System.out.println("Neues Passwort kann hinzugefügt werden.");
     }
@@ -210,5 +277,38 @@ public class Controller implements Initializable {
     private void changeInfoIsClicked(javafx.event.ActionEvent actionEvent) {
         tabPane_Main.getSelectionModel().select(2);
         System.out.println("Passwort wurde geändert und bearbeitet.");
+    }
+
+    // Wechsel auf den Informations Tab
+    //TODO
+    @FXML
+    private void changeToInfoTab() {
+        System.out.println("Lade Daten aus Datenbank");
+
+    }
+
+    public void getDatabaseEntries(String dbPath) {
+        List<String> queryColumns = new ArrayList<String>();
+        queryColumns.add("id");
+        queryColumns.add("name");
+        queryColumns.add("email");
+        queryColumns.add("website");
+        queryColumns.add("username");
+        queryColumns.add("password");
+
+        Connection conn = Database.createDatabaseConnection(dbPath);
+        LinkedHashMap<String, String> queryResult = WebsiteTable.query(conn, queryColumns);
+        for (Map.Entry<String, String> entry: queryResult.entrySet()) {
+            String columnName = entry.getKey();
+            String value = entry.getValue();
+
+            System.out.println(columnName);
+            System.out.println(value);
+            if (columnName.equals("name")) {
+                listView_dashboardListEntries.getItems().add(value);
+            }
+        }
+
+        Database.closeDatabase(conn);
     }
 }

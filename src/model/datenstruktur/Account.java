@@ -1,15 +1,19 @@
 package model.datenstruktur;
 
+import java.nio.file.Path;
+
 public class Account {
     private String username;
     private String email;
     private String password;
+    private String dbPath;
 
     // Konstruktor
-    public Account(String username, String email, String password) {
+    public Account(String username, String email, String password, String dbPath) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.dbPath = dbPath;
     }
 
     public String getUsername() {
@@ -34,5 +38,13 @@ public class Account {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getDBPath() {
+        return dbPath;
+    }
+
+    public void setDBPath(String dbPath) {
+        this.dbPath = dbPath;
     }
 }
