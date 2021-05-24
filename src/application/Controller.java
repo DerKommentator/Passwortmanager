@@ -1,23 +1,26 @@
 package application;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 import java.net.URL;
-import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
+import java.util.function.UnaryOperator;
 
 import javafx.fxml.Initializable;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
 import model.datenstruktur.Account;
-import model.datenstruktur.Website;
+import model.datenstruktur.AccountInfo;
 import model.sql.*;
 import utils.BCrypt;
-
-import javax.jws.soap.SOAPBinding;
 
 public class Controller implements Initializable {
 
@@ -81,6 +84,29 @@ public class Controller implements Initializable {
     @FXML
     private TextField txtfld_informationEmail;
 
+    @FXML
+    private TextField filterField;
+
+    @FXML
+    private TableView<AccountInfo> tableView;
+
+    @FXML
+    private TableColumn<AccountInfo, String> tableView_name;
+
+    @FXML
+    private TableColumn<AccountInfo, String> tableView_username;
+
+    @FXML
+    private TableColumn<AccountInfo, String> tableView_email;
+
+    @FXML
+    private TableColumn<AccountInfo, String> tableView_website;
+
+    @FXML
+    private TextField txtfld_informationUsername;
+
+    private final ObservableList<AccountInfo> dataList = FXCollections.observableArrayList();
+    private final Account user = new Account();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -93,6 +119,18 @@ public class Controller implements Initializable {
         btn_addPassword.setOnAction(this::addPasswordIsClicked);
         btn_editInfo.setOnAction(this::editInfoIsClicked);
         btn_changeInfo.setOnAction(this::changeInfoIsClicked);
+
+        tableView_name.setCellValueFactory(new PropertyValueFactory<>("Name"));
+        tableView_username.setCellValueFactory(new PropertyValueFactory<>("Username"));
+        tableView_email.setCellValueFactory(new PropertyValueFactory<>("Email"));
+        tableView_website.setCellValueFactory(new PropertyValueFactory<>("Website"));
+
+        /*Website web1 = new Website("rte@ge.e", "www.ge.de", "Test1", "1234", "lul");
+        Website web2 = new Website("rte@ge2.e", "www.ge2.de", "Test2", "12345", "lul2");
+        Website web3 = new Website("rte@ge3.e", "www.ge3.de", "Test3", "123456", "lul3");
+
+        dataList.addAll(web1, web2, web3);*/
+
     }
 
     // Account-Erstellungs Button beim Login
@@ -161,7 +199,7 @@ public class Controller implements Initializable {
                 columns.put("website", Datatypes.text);
                 columns.put("username", Datatypes.text);
                 columns.put("password", Datatypes.text);
-                WebsiteTable.createNewTable(websiteConn, "data", columns);
+                AccountInfoTable.createNewTable(websiteConn, "data", columns);
             } catch (Exception e) {
                 System.out.println("Registration - CreateWebsiteDB: " + e.getMessage());
                 return false;
@@ -182,7 +220,11 @@ public class Controller implements Initializable {
             if (isLogin(username, password)) {
                 System.out.println("Login erfolgreich.");
                 tabPane_Main.getSelectionModel().select(2);
-                getDatabaseEntries(username + ".db");
+                List<AccountInfo> queryResults = getDatabaseEntries(username + ".db");
+                user.setDBPath(username + ".db");
+                user.setUsername(username);
+                dataList.addAll(queryResults);
+                searchFilter();
             }
             else {
                 System.out.println("Login fehlgeschlagen.");
@@ -222,6 +264,12 @@ public class Controller implements Initializable {
         return false;
     }
 
+    // Zurueck zum Dashboard
+    @FXML
+    private void backToDashboardIsClicked(javafx.event.ActionEvent actionEvent) {
+        tabPane_Main.getSelectionModel().select(2);
+        System.out.println("Zurück zum Dashboard.");
+    }
 
     // Logut
     @FXML
@@ -240,21 +288,27 @@ public class Controller implements Initializable {
         String website = txtfld_informationWebsite.getText();
         String name = txtfld_informationName.getText();
         String password = txtfld_informationPassword.getText();
+        String username = txtfld_informationUsername.getText();
 
-        if(email != null && website != null && name != null && password != null){
-            Website erstellteWebsite = new Website(email, website , name, password);
+        if(email != null && website != null && name != null && password != null && username != null){
+            AccountInfo erstellteAccountInfo = new AccountInfo(email, website , name, password, username);
             System.out.println("Die Website wurde erfolgreich hinzugefügt.");
-            System.out.println("Email: " + erstellteWebsite.getEmail());
-            System.out.println("Website: " + erstellteWebsite.getWebsite());
-            System.out.println("Name: " + erstellteWebsite.getName());
-            System.out.println("Passwort: " + erstellteWebsite.getPassword());
+            System.out.println("Email: " + erstellteAccountInfo.getEmail());
+            System.out.println("Website: " + erstellteAccountInfo.getWebsite());
+            System.out.println("Name: " + erstellteAccountInfo.getName());
+            System.out.println("Passwort: " + erstellteAccountInfo.getPassword());
 
-            Connection conn = Database.createDatabaseConnection("users.db");
-            WebsiteTable.insert(conn, erstellteWebsite.getEmail(), erstellteWebsite.getWebsite(), erstellteWebsite.getName(), erstellteWebsite.getPassword());
+            Connection conn = Database.createDatabaseConnection(user.getDBPath());
+            AccountInfoTable.insert(conn, erstellteAccountInfo.getName(), erstellteAccountInfo.getEmail(), erstellteAccountInfo.getWebsite(), erstellteAccountInfo.getUsername(), erstellteAccountInfo.getPassword());
             Database.closeDatabase(conn);
 
+            //TODO: verbessern, weil uneffizient
+            List<AccountInfo> queryResults = getDatabaseEntries(user.getDBPath());
+            dataList.remove(0, queryResults.size() - 1);
+            dataList.addAll(queryResults);
+
         } else {
-            System.out.println("Die Website konnte nicht hinzugefügt werden, da die Textfelder ausgefüllt werden müssen.");
+            System.out.println("Die Website konnte nicht hinzugefügt werden, da alle Textfelder ausgefüllt werden müssen.");
         }
     }
 
@@ -285,9 +339,21 @@ public class Controller implements Initializable {
     private void changeToInfoTab() {
         System.out.println("Lade Daten aus Datenbank");
 
+        tableView.setRowFactory(tv -> {
+            TableRow<AccountInfo> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty() && event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                    AccountInfo clickedRow = row.getItem();
+                    System.out.println(clickedRow.getId());
+                }
+            });
+            return row;
+        });
     }
 
-    public void getDatabaseEntries(String dbPath) {
+
+
+    public List<AccountInfo> getDatabaseEntries(String dbPath) {
         List<String> queryColumns = new ArrayList<String>();
         queryColumns.add("id");
         queryColumns.add("name");
@@ -297,18 +363,51 @@ public class Controller implements Initializable {
         queryColumns.add("password");
 
         Connection conn = Database.createDatabaseConnection(dbPath);
-        LinkedHashMap<String, String> queryResult = WebsiteTable.query(conn, queryColumns);
-        for (Map.Entry<String, String> entry: queryResult.entrySet()) {
+        List<AccountInfo> accountsFromDB = AccountInfoTable.query(conn, queryColumns);
+
+        /*for (Map.Entry<String, String> entry: queryResult.entrySet()) {
             String columnName = entry.getKey();
             String value = entry.getValue();
 
             System.out.println(columnName);
             System.out.println(value);
             if (columnName.equals("name")) {
-                listView_dashboardListEntries.getItems().add(value);
+                //listView_dashboardListEntries.getItems().add(value);
+
             }
-        }
+        }*/
 
         Database.closeDatabase(conn);
+
+        return accountsFromDB;
+    }
+
+    public void searchFilter() {
+        FilteredList<AccountInfo> filteredData = new FilteredList<>(dataList, b -> true);
+
+        filterField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(accountInfo -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (accountInfo.getName().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+                    return true;
+                } else if (accountInfo.getEmail().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+                    return true;
+                } else if (accountInfo.getWebsite().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+                    return true;
+                } else if (accountInfo.getUsername().toLowerCase().indexOf(lowerCaseFilter) != -1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+        });
+
+        SortedList<AccountInfo> sortedData = new SortedList<>(filteredData);
+        sortedData.comparatorProperty().bind(tableView.comparatorProperty());
+        tableView.setItems(sortedData);
     }
 }

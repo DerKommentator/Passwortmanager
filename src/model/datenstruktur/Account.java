@@ -16,6 +16,8 @@ public class Account {
         this.dbPath = dbPath;
     }
 
+    public Account() {}
+
     public String getUsername() {
         return username;
     }

@@ -1,9 +1,11 @@
 package model.sql;
 
+import model.datenstruktur.AccountInfo;
+
 import java.sql.*;
 import java.util.*;
 
-public class WebsiteTable {
+public class AccountInfoTable {
     public static void createNewTable(Connection conn, String tableName, LinkedHashMap<String, Datatypes> columns) {
         StringBuilder sqlBody = new StringBuilder();
 
@@ -42,15 +44,16 @@ public class WebsiteTable {
     }
 
     // TODO: password hashen / verschluesseln
-    public static void insert(Connection conn, String email, String website, String username, String password) {
-        String sql = "INSERT INTO websites (email, website, username, password) VALUES (?,?,?,?)";
+    public static void insert(Connection conn, String name, String email, String website, String username, String password) {
+        String sql = "INSERT INTO data (name, email, website, username, password) VALUES (?,?,?,?,?)";
 
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
-            preparedStatement.setString(1, email);
-            preparedStatement.setString(2, website);
-            preparedStatement.setString(3, username);
-            preparedStatement.setString(4, password);
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, email);
+            preparedStatement.setString(3, website);
+            preparedStatement.setString(4, username);
+            preparedStatement.setString(5, password);
             preparedStatement.executeUpdate();
 
             System.out.println("Ein neuer Eintrag wurde hinzugefügt: " + preparedStatement.toString());
@@ -60,9 +63,9 @@ public class WebsiteTable {
         }
     }
 
-    public static LinkedHashMap<String, String> query(Connection conn, List<String> columnNames) {
+    public static List<AccountInfo> query(Connection conn, List<String> columnNames) {
         StringBuilder sql = new StringBuilder("SELECT ");
-        LinkedHashMap<String, String> queryResults = new LinkedHashMap<String, String>();
+        List<AccountInfo> returnAccountInfos = new ArrayList<>();
 
         for (String columnName : columnNames) {
             sql.append(columnName).append(",");
@@ -76,16 +79,57 @@ public class WebsiteTable {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sqlQuery);
 
+            int row = 1;
             while (rs.next()) {
+                //System.out.println("row: " + row);
+                LinkedHashMap<String, String> queryResults = new LinkedHashMap<String, String>();
                 for (String columnName : columnNames) {
+                    //System.out.println("---columnname: " + columnName);
+                    //System.out.println("---value: " + rs.getString(columnName));
                     queryResults.put(columnName, rs.getString(columnName));
                 }
+                returnAccountInfos.add(parseDBEntries(queryResults));
+                //System.out.println("===============");
+                row++;
             }
 
         } catch (SQLException e) {
             System.out.println("ERROR - DB query: " + e.getMessage());
         }
 
-        return queryResults;
+        return returnAccountInfos;
     }
+
+    public static AccountInfo parseDBEntries(LinkedHashMap<String, String> queryResult) {
+        AccountInfo accountInfo = new AccountInfo();
+        for (Map.Entry<String, String> entry: queryResult.entrySet()) {
+            String columnName = entry.getKey();
+            String value = entry.getValue();
+
+            //System.out.println(columnName);
+            //System.out.println(value);
+            switch (columnName) {
+                case "name":
+                    accountInfo.setName(value);
+                    break;
+                case "email":
+                    accountInfo.setEmail(value);
+                    break;
+                case "website":
+                    accountInfo.setWebsite(value);
+                    break;
+                case "username":
+                    accountInfo.setUsername(value);
+                    break;
+                case "password":
+                    accountInfo.setPassword(value);
+                    break;
+                case "id":
+                    accountInfo.setId(Long.parseLong(value));
+                    break;
+            }
+        }
+        return accountInfo;
+    }
+
 }
