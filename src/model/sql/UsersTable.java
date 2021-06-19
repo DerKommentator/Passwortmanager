@@ -2,6 +2,7 @@ package model.sql;
 
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import model.datenstruktur.Account;
+import model.datenstruktur.AccountInfo;
 import org.sqlite.mc.SQLiteMCChacha20Config;
 
 import java.nio.file.Path;
@@ -66,6 +67,31 @@ public class UsersTable {
         }
     }
 
+    public static boolean update(Connection conn, String username, String email, String password, String dbPath, long id) {
+        String sql = "UPDATE users SET username = ? , "
+                + "email = ? ,"
+                + "password = ? ,"
+                + "dbPath = ? "
+                + "WHERE rowid = ?";
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            pstmt.setString(2, email);
+            pstmt.setString(3, password);
+            pstmt.setString(4, dbPath);
+            pstmt.setLong(5, id);
+
+            System.out.println(pstmt);
+            // update
+            pstmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("ERROR - update: " + e.getMessage());
+            return false;
+        }
+    }
+
     public static Boolean insertNewUser(Connection conn, Account user) {
         String username = user.getUsername();
         String email = user.getEmail();
@@ -92,9 +118,9 @@ public class UsersTable {
         return false;
     }
 
-    public static LinkedHashMap<String, String> query(Connection conn, List<String> columnNames) {
+    public static List<Account> query(Connection conn, List<String> columnNames) {
         StringBuilder sql = new StringBuilder("SELECT ");
-        LinkedHashMap<String, String> queryResults = new LinkedHashMap<String, String>();
+        List<Account> returnAccounts = new ArrayList<>();
 
         for (String columnName : columnNames) {
             sql.append(columnName).append(",");
@@ -109,16 +135,19 @@ public class UsersTable {
             ResultSet rs = stmt.executeQuery(sqlQuery);
 
             while (rs.next()) {
+                LinkedHashMap<String, String> queryResults = new LinkedHashMap<String, String>();
+
                 for (String columnName : columnNames) {
                     queryResults.put(columnName, rs.getString(columnName));
                 }
+                returnAccounts.add(parseDBEntries(queryResults));
             }
 
         } catch (SQLException e) {
             System.out.println("ERROR - DB query: " + e.getMessage());
         }
 
-        return queryResults;
+        return returnAccounts;
     }
 
     public static List<Object> querySqlStatement(Connection conn, String sql) {
@@ -147,5 +176,47 @@ public class UsersTable {
         return queryReturn;
     }
 
+    public static Account parseDBEntries(LinkedHashMap<String, String> queryResult) {
+        Account account = new Account();
+        for (Map.Entry<String, String> entry: queryResult.entrySet()) {
+            String columnName = entry.getKey();
+            String value = entry.getValue();
+
+            //System.out.println(columnName);
+            //System.out.println(value);
+            switch (columnName) {
+                case "email":
+                    account.setEmail(value);
+                    break;
+                case "username":
+                    account.setUsername(value);
+                    break;
+                case "password":
+                    account.setPassword(value);
+                    break;
+                case "rowid":
+                    account.setId(Long.parseLong(value));
+                    break;
+            }
+        }
+        return account;
+    }
+
+    public static Account parseDBResultSetEntries(ResultSet resultSet) {
+        Account account = new Account();
+        try {
+            while (resultSet.next()) {
+                account.setUsername(resultSet.getString("username"));
+                account.setEmail(resultSet.getString("email"));
+                account.setPassword(resultSet.getString("password"));
+                account.setDBPath(resultSet.getString("dbPath"));
+                account.setId(resultSet.getLong("rowid"));
+            }
+        } catch (SQLException e) {
+            System.out.println("ERROR - DB parseAccount: " + e.getMessage());
+        }
+        System.out.println(account.getPassword());
+        return account;
+    }
 
 }

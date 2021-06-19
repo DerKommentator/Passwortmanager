@@ -26,13 +26,13 @@ public class TestController {
         Connection conn = Database.createDatabaseConnection("users.db");
         UsersTable.createNewTable(conn, "users", columns);
         //UsersTable.insert(conn, "testuser", "test@gmx.de", "123456");
-        LinkedHashMap<String, String> queryResult = UsersTable.query(conn, queryColumns);
+        /*LinkedHashMap<String, String> queryResult = UsersTable.query(conn, queryColumns);
         for (Map.Entry<String, String> entry: queryResult.entrySet()) {
             String columnName = entry.getKey();
             String value = entry.getValue();
 
             System.out.println(columnName);
             System.out.println(value);
-        }
+        }*/
     }
 }

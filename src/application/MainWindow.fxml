@@ -9,7 +9,6 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -60,12 +59,12 @@
                                     <Insets />
                                  </GridPane.margin>
                               </TextField>
-                              <PasswordField fx:id="field_password" maxHeight="25.0" maxWidth="300.0" promptText="Passwort" GridPane.rowIndex="2" />
-                              <ToggleButton mnemonicParsing="false" text="Passwort anzeigen" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                              <PasswordField fx:id="field_password" accessibleRole="TEXT" maxHeight="25.0" maxWidth="300.0" promptText="Passwort" GridPane.rowIndex="2" />
+                              <Button fx:id="btn_showLoginPassword" alignment="CENTER" mnemonicParsing="false" text="Passwort anzeigen" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <GridPane.margin>
                                     <Insets left="10.0" />
                                  </GridPane.margin>
-                              </ToggleButton>
+                              </Button>
                            </children>
                         </GridPane>
                      </center>
@@ -121,11 +120,11 @@
                                  </GridPane.margin>
                               </TextField>
                               <PasswordField fx:id="txtfld_createAccountPassword" maxHeight="25.0" maxWidth="300.0" promptText="Passwort" GridPane.rowIndex="3" />
-                              <ToggleButton mnemonicParsing="false" text="Passwort anzeigen" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                              <Button fx:id="btn_showCreateAccPassword" mnemonicParsing="false" text="Passwort anzeigen" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                  <GridPane.margin>
                                     <Insets left="10.0" />
                                  </GridPane.margin>
-                              </ToggleButton>
+                              </Button>
                               <TextField fx:id="txtfld_createAccountEmail" promptText="Email" GridPane.rowIndex="2" />
                            </children>
                         </GridPane>
@@ -154,7 +153,7 @@
                               <VBox minWidth="100.0">
                                  <children>
                                     <Region minHeight="680.0" />
-                                    <Button alignment="CENTER" minWidth="90.0" mnemonicParsing="false" text="Einstellungen" textAlignment="CENTER">
+                                    <Button fx:id="btn_changeToSettingsTab" alignment="CENTER" minWidth="90.0" mnemonicParsing="false" text="Einstellungen" textAlignment="CENTER">
                                        <VBox.margin>
                                           <Insets bottom="10.0" left="10.0" />
                                        </VBox.margin>
@@ -234,7 +233,7 @@
                                                 <Region minHeight="300.0" />
                                                 <HBox prefHeight="100.0" prefWidth="200.0">
                                                    <children>
-                                                      <Button alignment="CENTER" maxHeight="50.0" mnemonicParsing="false" text="Delete" textOverrun="CLIP" HBox.hgrow="ALWAYS">
+                                                      <Button fx:id="btn_dashboardDelete" alignment="CENTER" maxHeight="50.0" mnemonicParsing="false" text="Delete" textOverrun="CLIP" HBox.hgrow="ALWAYS">
                                                          <HBox.margin>
                                                             <Insets left="125.0" right="12.0" />
                                                          </HBox.margin></Button>
@@ -242,26 +241,26 @@
                                                 </HBox>
                                              </children>
                                           </VBox>
-                                          <Button mnemonicParsing="false" text="Anzeigen" GridPane.columnIndex="2" GridPane.rowIndex="4">
+                                          <Button fx:id="btn_showDashbordPassword" mnemonicParsing="false" text="Anzeigen" GridPane.columnIndex="2" GridPane.rowIndex="4">
                                              <GridPane.margin>
                                                 <Insets left="10.0" />
                                              </GridPane.margin></Button>
-                                          <TextField minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                          <PasswordField fx:id="txtfld_dashboardPassword" editable="false" minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                             <GridPane.margin>
+                                                <Insets bottom="10.0" top="10.0" />
+                                             </GridPane.margin>
+                                          </PasswordField>
+                                          <TextField fx:id="txtfld_dashboardName" editable="false" minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                              <GridPane.margin>
                                                 <Insets bottom="10.0" top="10.0" />
                                              </GridPane.margin>
                                           </TextField>
-                                          <TextField minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                          <TextField fx:id="txtfld_dashboardWebsite" editable="false" minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                              <GridPane.margin>
                                                 <Insets bottom="10.0" top="10.0" />
                                              </GridPane.margin>
                                           </TextField>
-                                          <TextField minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                                             <GridPane.margin>
-                                                <Insets bottom="10.0" top="10.0" />
-                                             </GridPane.margin>
-                                          </TextField>
-                                          <TextField minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                          <TextField fx:id="txtfld_dashboardEmail" editable="false" minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                              <GridPane.margin>
                                                 <Insets bottom="10.0" top="10.0" />
                                              </GridPane.margin>
@@ -351,7 +350,7 @@
                                           <Insets bottom="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </TextField>
-                                    <Button mnemonicParsing="false" text="Anzeigen" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                                    <Button fx:id="btn_showAddInfoPassword" mnemonicParsing="false" text="Anzeigen" GridPane.columnIndex="2" GridPane.rowIndex="3">
                                        <GridPane.margin>
                                           <Insets left="10.0" />
                                        </GridPane.margin>
@@ -413,6 +412,7 @@
                                     <ColumnConstraints hgrow="SOMETIMES" />
                                  </columnConstraints>
                                  <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                     <RowConstraints vgrow="SOMETIMES" />
                                     <RowConstraints vgrow="SOMETIMES" />
                                     <RowConstraints vgrow="SOMETIMES" />
@@ -420,45 +420,121 @@
                                     <RowConstraints vgrow="SOMETIMES" />
                                  </rowConstraints>
                                  <children>
-                                    <Button fx:id="btn_changeInfo" mnemonicParsing="false" text="Bearbeiten" GridPane.rowIndex="4">
+                                    <Button fx:id="btn_changeInfo" mnemonicParsing="false" text="Update" GridPane.rowIndex="5">
                                        <GridPane.margin>
                                           <Insets bottom="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </Button>
-                                    <Label text="Email:" />
-                                    <Label text="Website:" GridPane.rowIndex="1" />
-                                    <Label text="Username:" GridPane.rowIndex="2" />
-                                    <Label text="Passwort:" GridPane.rowIndex="3" />
-                                    <TextField minWidth="300.0" GridPane.columnIndex="1">
+                                    <Label text="Email:" GridPane.rowIndex="1" />
+                                    <Label text="Website:" GridPane.rowIndex="2" />
+                                    <Label text="Username:" GridPane.rowIndex="3" />
+                                    <Label text="Passwort:" GridPane.rowIndex="4" />
+                                    <TextField fx:id="txtfld_editEmail" minWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                        <GridPane.margin>
                                           <Insets bottom="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </TextField>
-                                    <TextField minWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    <TextField fx:id="txtfld_editWebsite" minWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                        <GridPane.margin>
                                           <Insets bottom="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </TextField>
-                                    <TextField GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                    <TextField fx:id="txtfld_editUsername" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                        <GridPane.margin>
                                           <Insets bottom="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </TextField>
-                                    <TextField GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                    <TextField fx:id="txtfld_editPassword" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                        <GridPane.margin>
                                           <Insets bottom="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </TextField>
-                                    <Button mnemonicParsing="false" text="Anzeigen" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                                    <Button fx:id="btn_showEditInfoPassword" mnemonicParsing="false" text="Anzeigen" GridPane.columnIndex="2" GridPane.rowIndex="4">
                                        <GridPane.margin>
                                           <Insets left="10.0" />
                                        </GridPane.margin>
                                     </Button>
-                                    <Button fx:id="btn_backToDashboardEdit" mnemonicParsing="false" onAction="#backToDashboardIsClicked" text="Zurück" GridPane.columnIndex="2" GridPane.rowIndex="4">
+                                    <Button fx:id="btn_backToDashboardEdit" mnemonicParsing="false" onAction="#backToDashboardIsClicked" text="Zurück" GridPane.columnIndex="2" GridPane.rowIndex="5">
                                        <GridPane.margin>
                                           <Insets left="10.0" />
                                        </GridPane.margin>
                                     </Button>
+                                    <Label text="Name:" />
+                                    <TextField fx:id="txtfld_editName" minWidth="300.0" GridPane.columnIndex="1" />
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </VBox>
+                     </center>
+                  </BorderPane>
+               </content>
+            </Tab>
+            <Tab text="Einstellungen">
+               <content>
+                  <BorderPane>
+                     <top>
+                        <Region minHeight="200.0" BorderPane.alignment="CENTER" />
+                     </top>
+                     <left>
+                        <Region minWidth="350.0" BorderPane.alignment="CENTER" />
+                     </left>
+                     <right>
+                        <Region minWidth="350.0" BorderPane.alignment="CENTER" />
+                     </right>
+                     <bottom>
+                        <Region minHeight="100.0" BorderPane.alignment="CENTER" />
+                     </bottom>
+                     <center>
+                        <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Einstellungen" textAlignment="CENTER" wrappingWidth="345.0">
+                                 <font>
+                                    <Font size="31.0" />
+                                 </font>
+                                 <VBox.margin>
+                                    <Insets left="90.0" />
+                                 </VBox.margin>
+                              </Text>
+                              <GridPane>
+                                 <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints vgrow="SOMETIMES" />
+                                    <RowConstraints vgrow="SOMETIMES" />
+                                    <RowConstraints vgrow="SOMETIMES" />
+                                    <RowConstraints vgrow="SOMETIMES" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Button fx:id="btn_changeSettings" mnemonicParsing="false" text="Update" GridPane.rowIndex="4">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </Button>
+                                    <Label text="neues Passwort:" GridPane.rowIndex="1" />
+                                    <Label prefWidth="123.0" text="neues Passwort bestätigen:" wrapText="true" GridPane.rowIndex="2" />
+                                    <Label text="Email:" GridPane.rowIndex="3" />
+                                    <TextField fx:id="txtfld_settingsEmail" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </TextField>
+                                    <Button fx:id="btn_backToDashboardEdit1" mnemonicParsing="false" onAction="#backToDashboardIsClicked" text="Zurück" GridPane.columnIndex="2" GridPane.rowIndex="4">
+                                       <GridPane.margin>
+                                          <Insets left="10.0" />
+                                       </GridPane.margin>
+                                    </Button>
+                                    <Label text="aktuelles Passwort:" />
+                                    <PasswordField fx:id="txtfld_settingsOldPw" minWidth="300.0" GridPane.columnIndex="1" />
+                                    <PasswordField fx:id="txtfld_settingsNewPw" minWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <GridPane.margin>
+                                          <Insets bottom="5.0" top="5.0" />
+                                       </GridPane.margin>
+                                    </PasswordField>
+                                    <PasswordField fx:id="txtfld_settingsValNewPw" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                  </children>
                               </GridPane>
                            </children>
