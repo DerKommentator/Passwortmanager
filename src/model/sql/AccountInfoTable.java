@@ -1,5 +1,6 @@
 package model.sql;
 
+import com.sun.corba.se.spi.orb.StringPair;
 import model.datenstruktur.AccountInfo;
 
 import java.sql.*;
@@ -42,9 +43,49 @@ public class AccountInfoTable {
             System.out.println("ERROR - DB Create Table: " + e.getMessage());
         }
     }
+    public static boolean update(Connection conn, String name, String email, String website, String username, String password, long id) {
+        String sql = "UPDATE data SET name = ? , "
+                + "email = ? ,"
+                + "website = ? ,"
+                + "username = ? ,"
+                + "password = ? "
+                + "WHERE id = ?";
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, name);
+            pstmt.setString(2, email);
+            pstmt.setString(3, website);
+            pstmt.setString(4, username);
+            pstmt.setString(5, password);
+            pstmt.setLong(6, id);
+            // update
+            pstmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("ERROR - update: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static boolean delete(Connection conn, long id) {
+        String sql = "DELETE FROM data WHERE id = ?";
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setLong(1, id);
+
+            // execute the delete statement
+            pstmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("ERROR - delete: " + e.getMessage());
+            return false;
+        }
+    }
 
     // TODO: password hashen / verschluesseln
-    public static void insert(Connection conn, String name, String email, String website, String username, String password) {
+    public static boolean insert(Connection conn, String name, String email, String website, String username, String password) {
         String sql = "INSERT INTO data (name, email, website, username, password) VALUES (?,?,?,?,?)";
 
         try {
@@ -57,9 +98,10 @@ public class AccountInfoTable {
             preparedStatement.executeUpdate();
 
             System.out.println("Ein neuer Eintrag wurde hinzugefügt: " + preparedStatement.toString());
-
+            return true;
         } catch (SQLException e) {
             System.out.println("ERROR - DB insert: " + e.getMessage());
+            return false;
         }
     }
 
@@ -79,7 +121,6 @@ public class AccountInfoTable {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sqlQuery);
 
-            int row = 1;
             while (rs.next()) {
                 //System.out.println("row: " + row);
                 LinkedHashMap<String, String> queryResults = new LinkedHashMap<String, String>();
@@ -90,7 +131,6 @@ public class AccountInfoTable {
                 }
                 returnAccountInfos.add(parseDBEntries(queryResults));
                 //System.out.println("===============");
-                row++;
             }
 
         } catch (SQLException e) {

@@ -7,6 +7,7 @@ public class Account {
     private String email;
     private String password;
     private String dbPath;
+    private long id;
 
     // Konstruktor
     public Account(String username, String email, String password, String dbPath) {
@@ -48,5 +49,13 @@ public class Account {
 
     public void setDBPath(String dbPath) {
         this.dbPath = dbPath;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

@@ -1,6 +1,8 @@
 package model.datenstruktur;
 
 public class AccountInfo {
+    private static final AccountInfo EMPTY = new AccountInfo();
+
     private String email;
     private String website;
     private String name;
@@ -75,5 +77,9 @@ public class AccountInfo {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isEmpty() {
+        return this.equals(EMPTY);
     }
 }
