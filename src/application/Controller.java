@@ -36,6 +36,8 @@ public class Controller implements Initializable {
 
     @FXML
     private PasswordField field_password;
+    @FXML
+    private TextField txtfld_loginPasswordText;
 
     @FXML
     private Button btn_login;
@@ -72,12 +74,16 @@ public class Controller implements Initializable {
 
     @FXML
     private PasswordField txtfld_createAccountPassword;
+    @FXML
+    private TextField txtfld_createAccountPasswordText;
 
     @FXML
     private TextField txtfld_createAccountEmail;
 
     @FXML
-    private TextField txtfld_informationPassword;
+    private PasswordField txtfld_informationPassword;
+    @FXML
+    private TextField txtfld_informationPasswordText;
 
     @FXML
     private TextField txtfld_informationName;
@@ -90,6 +96,8 @@ public class Controller implements Initializable {
 
     @FXML
     private PasswordField txtfld_dashboardPassword;
+    @FXML
+    private TextField txtfld_dashboardPasswordText;
 
     @FXML
     private TextField txtfld_dashboardName;
@@ -100,23 +108,39 @@ public class Controller implements Initializable {
     @FXML
     private TextField txtfld_dashboardEmail;
 
+    //@FXML
+    //private Button btn_showLoginPassword;
     @FXML
-    private Button btn_showLoginPassword;
+    private CheckBox chkbx_showLoginPassword;
+    //@FXML
+    //private Button btn_showCreateAccPassword;
     @FXML
-    private Button btn_showCreateAccPassword;
+    private CheckBox chkbx_showCreateAccPassword;
+    //@FXML
+    //private Button btn_showDashbordPassword;
     @FXML
-    private Button btn_showDashbordPassword;
+    private CheckBox chkbx_showDashbordPassword;
+    //@FXML
+    //private Button btn_showAddInfoPassword;
     @FXML
-    private Button btn_showAddInfoPassword;
+    private CheckBox chkbx_showAddInfoPassword;
+    //@FXML
+    //private Button btn_showEditInfoPassword;
     @FXML
-    private Button btn_showEditInfoPassword;
+    private CheckBox chkbx_showEditInfoPassword;
+    @FXML
+    private CheckBox chkbx_showSettingsOldPassword;
+    @FXML
+    private CheckBox chkbx_showSettingsNewPassword;
 
 
     @FXML
     private TextField filterField;
 
     @FXML
-    private TextField txtfld_editPassword;
+    private PasswordField txtfld_editPassword;
+    @FXML
+    private TextField txtfld_editPasswordText;
 
     @FXML
     private TableView<AccountInfo> tableView;
@@ -157,9 +181,15 @@ public class Controller implements Initializable {
     @FXML
     private PasswordField txtfld_settingsOldPw;
     @FXML
+    private TextField txtfld_settingsOldPwText;
+    @FXML
     private PasswordField txtfld_settingsNewPw;
     @FXML
+    private TextField txtfld_settingsNewPwText;
+    @FXML
     private PasswordField txtfld_settingsValNewPw;
+    @FXML
+    private TextField txtfld_settingsValNewPwText;
 
 
     @FXML
@@ -182,11 +212,26 @@ public class Controller implements Initializable {
         btn_editInfo.setOnAction(e -> editInfoIsClicked(accountInfo));
         btn_changeInfo.setOnAction(e -> updateEntry());
 
-        btn_showDashbordPassword.setOnAction(e -> showPassword(txtfld_dashboardPassword));
-        btn_showLoginPassword.setOnAction(e -> showPassword(field_password));
-        btn_showCreateAccPassword.setOnAction(e -> showPassword(txtfld_createAccountPassword));
-        btn_showAddInfoPassword.setOnAction(e -> showPassword(txtfld_informationPassword));
-        btn_showEditInfoPassword.setOnAction(e -> showPassword(txtfld_editPassword));
+        //btn_showDashbordPassword.setOnAction(e -> showPassword(txtfld_dashboardPassword));
+        this.toggleVisiblePassword(chkbx_showDashbordPassword, txtfld_dashboardPasswordText, txtfld_dashboardPassword);
+        this.toggleVisiblePassword(chkbx_showDashbordPassword, txtfld_dashboardPasswordText, txtfld_dashboardPassword);
+        this.toggleVisiblePassword(chkbx_showLoginPassword, txtfld_loginPasswordText, field_password);
+        this.toggleVisiblePassword(chkbx_showCreateAccPassword, txtfld_createAccountPasswordText, txtfld_createAccountPassword);
+        this.toggleVisiblePassword(chkbx_showAddInfoPassword, txtfld_informationPasswordText, txtfld_informationPassword);
+        this.toggleVisiblePassword(chkbx_showEditInfoPassword, txtfld_editPasswordText, txtfld_editPassword);
+
+        this.toggleVisiblePassword(chkbx_showSettingsOldPassword, txtfld_settingsOldPwText, txtfld_settingsOldPw);
+        this.toggleTwoVisiblePassword(chkbx_showSettingsNewPassword, txtfld_settingsNewPwText, txtfld_settingsNewPw, txtfld_settingsValNewPwText, txtfld_settingsValNewPw);
+
+        chkbx_showDashbordPassword.setOnAction(e -> toggleVisiblePassword(chkbx_showDashbordPassword, txtfld_dashboardPasswordText, txtfld_dashboardPassword));
+        chkbx_showLoginPassword.setOnAction(e -> toggleVisiblePassword(chkbx_showLoginPassword, txtfld_loginPasswordText, field_password));
+        chkbx_showCreateAccPassword.setOnAction(e -> toggleVisiblePassword(chkbx_showCreateAccPassword, txtfld_createAccountPasswordText, txtfld_createAccountPassword));
+        chkbx_showAddInfoPassword.setOnAction(e -> toggleVisiblePassword(chkbx_showAddInfoPassword, txtfld_informationPasswordText, txtfld_informationPassword));
+        chkbx_showEditInfoPassword.setOnAction(e -> toggleVisiblePassword(chkbx_showEditInfoPassword, txtfld_editPasswordText, txtfld_editPassword));
+
+        chkbx_showSettingsOldPassword.setOnAction(e -> toggleVisiblePassword(chkbx_showSettingsOldPassword, txtfld_settingsOldPwText, txtfld_settingsOldPw));
+        chkbx_showSettingsNewPassword.setOnAction(e -> toggleTwoVisiblePassword(chkbx_showSettingsNewPassword, txtfld_settingsNewPwText, txtfld_settingsNewPw, txtfld_settingsValNewPwText, txtfld_settingsValNewPw));
+
 
         btn_dashboardDelete.setOnAction(e -> deleteAccountInfoEntry(accountInfo));
 
@@ -198,12 +243,6 @@ public class Controller implements Initializable {
         tableView_username.setCellValueFactory(new PropertyValueFactory<>("Username"));
         tableView_email.setCellValueFactory(new PropertyValueFactory<>("Email"));
         tableView_website.setCellValueFactory(new PropertyValueFactory<>("Website"));
-
-        /*Website web1 = new Website("rte@ge.e", "www.ge.de", "Test1", "1234", "lul");
-        Website web2 = new Website("rte@ge2.e", "www.ge2.de", "Test2", "12345", "lul2");
-        Website web3 = new Website("rte@ge3.e", "www.ge3.de", "Test3", "123456", "lul3");
-
-        dataList.addAll(web1, web2, web3);*/
 
     }
 
@@ -330,6 +369,7 @@ public class Controller implements Initializable {
             resultSet = preparedStatement.executeQuery();
 
             user = UsersTable.parseDBResultSetEntries(resultSet);
+            System.out.println(user.getDBPath());
             /*while (resultSet.next()) {
                 userPassword = resultSet.getString("password");
                 //System.out.println(".........."+userPassword);
@@ -490,6 +530,7 @@ public class Controller implements Initializable {
                     AccountInfo clickedRow = row.getItem();
                     accountInfo = clickedRow;
                     txtfld_dashboardPassword.setText(clickedRow.getPassword());
+                    //txtfld_dashboardPasswordText.setText(clickedRow.getPassword());
                     txtfld_dashboardName.setText(clickedRow.getEmail());
                     txtfld_dashboardWebsite.setText(clickedRow.getWebsite());
                     txtfld_dashboardEmail.setText(clickedRow.getEmail());
@@ -587,7 +628,9 @@ public class Controller implements Initializable {
                 if (newPw.equals(newValPw)) {
                     String generatedSecurePasswordHash = BCrypt.hashpw(newPw, BCrypt.gensalt(12));
 
+                    //System.out.println("Alt: " + user.getPassword());
                     user.setPassword(generatedSecurePasswordHash);
+                    //System.out.println("Neu: " + user.getPassword());
                 } else {
                     System.out.println("Passwörter stimmen nicht überein");
                 }
@@ -607,4 +650,39 @@ public class Controller implements Initializable {
             System.out.println("Passwort stimmt nicht");
         }
     }
+
+    @FXML
+    public void toggleVisiblePassword(CheckBox checkBox, TextField textField, PasswordField passwordField) {
+        if (checkBox.isSelected()) {
+            textField.setText(passwordField.getText());
+            textField.setVisible(true);
+            passwordField.setVisible(false);
+            return;
+        }
+        passwordField.setText(textField.getText());
+        passwordField.setVisible(true);
+        textField.setVisible(false);
+    }
+
+    @FXML
+    public void toggleTwoVisiblePassword(CheckBox checkBox, TextField textField, PasswordField passwordField, TextField textField2, PasswordField passwordField2) {
+        if (checkBox.isSelected()) {
+            textField.setText(passwordField.getText());
+            textField.setVisible(true);
+            passwordField.setVisible(false);
+
+            textField2.setText(passwordField2.getText());
+            textField2.setVisible(true);
+            passwordField2.setVisible(false);
+            return;
+        }
+        passwordField.setText(textField.getText());
+        passwordField.setVisible(true);
+        textField.setVisible(false);
+
+        passwordField2.setText(textField2.getText());
+        passwordField2.setVisible(true);
+        textField2.setVisible(false);
+    }
+
 }
