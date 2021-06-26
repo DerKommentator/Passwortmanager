@@ -1,7 +1,5 @@
 package model.sql;
 
-import model.sql.Database;
-import model.sql.UsersTable;
 import javafx.event.ActionEvent;
 
 import java.sql.Connection;
