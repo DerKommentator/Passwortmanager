@@ -8,6 +8,7 @@ public class Account {
     private String password;
     private String dbPath;
     private long id;
+    private String decryptedPassword;
 
     // Konstruktor
     public Account(String username, String email, String password, String dbPath) {
@@ -57,5 +58,13 @@ public class Account {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getDecryptedPassword() {
+        return decryptedPassword;
+    }
+
+    public void setDecryptedPassword(String decryptedPassword) {
+        this.decryptedPassword = decryptedPassword;
     }
 }

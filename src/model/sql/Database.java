@@ -1,5 +1,9 @@
 package model.sql;
 
+import utils.CryptoException;
+import utils.CryptoUtils;
+
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -16,7 +20,28 @@ public class Database {
             if (conn != null) {
                 DatabaseMetaData meta = conn.getMetaData();
                 System.out.println("DB: The driver name is: " + meta.getDriverName());
-                System.out.println("DB: A new database has been created. URL: " + url);
+                System.out.println("DB: Database URL: " + url);
+            }
+        } catch (SQLException e) {
+            System.out.println("DB: " + e.getMessage());
+        }
+        return conn;
+    }
+
+    public static Connection createPasswordDatabaseConnection(String filePath, String username, String password) {
+        //File decryptedFile = decryptDatabase(password, new File(filePath));
+
+        String url = String.format("jdbc:sqlite:%s", filePath);
+        Connection conn = null;
+        try {
+            //Connection conn = DriverManager.getConnection(url, SQLiteMCChacha20Config.getDefault().withKey("Key").toProperties());
+            //conn = DriverManager.getConnection(url, username, password);
+            conn = DriverManager.getConnection(url);
+
+            if (conn != null) {
+                DatabaseMetaData meta = conn.getMetaData();
+                System.out.println("DB: The driver name is: " + meta.getDriverName());
+                System.out.println("DB: Database URL: " + url);
             }
         } catch (SQLException e) {
             System.out.println("DB: " + e.getMessage());
@@ -30,5 +55,20 @@ public class Database {
         } catch (SQLException e) {
             System.out.println("ERROR - DB close: " + e.getMessage());
         }
+    }
+
+    private static File decryptDatabase(String key, File encryptedFile) {
+        //File encryptedFile = new File("document.encrypted");
+        File decryptedFile = new File("document.decrypted");
+
+        try {
+            //CryptoUtils.encrypt(key, filePath, encryptedFile);
+            CryptoUtils.decrypt(key, encryptedFile, decryptedFile);
+        } catch (CryptoException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+
+        return decryptedFile;
     }
 }
