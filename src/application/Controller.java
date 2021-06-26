@@ -1,14 +1,11 @@
 package application;
 
-import com.sun.istack.internal.Nullable;
+import org.jetbrains.annotations.Nullable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
-import javafx.scene.AccessibleRole;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 
 import java.net.URL;
@@ -16,20 +13,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
-import java.util.function.UnaryOperator;
 
 import javafx.fxml.Initializable;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
-import javafx.stage.Stage;
-import javafx.stage.Window;
 import model.datenstruktur.Account;
 import model.datenstruktur.AccountInfo;
 import model.sql.*;
 import utils.BCrypt;
 import utils.Popup;
 
-import javax.activation.CommandObject;
 
 public class Controller implements Initializable {
 
@@ -105,7 +98,7 @@ public class Controller implements Initializable {
     private TextField txtfld_dashboardPasswordText;
 
     @FXML
-    private TextField txtfld_dashboardName;
+    private TextField txtfld_dashboardUsername;
 
     @FXML
     private TextField txtfld_dashboardWebsite;
@@ -567,7 +560,7 @@ public class Controller implements Initializable {
                     accountInfo = clickedRow;
                     txtfld_dashboardPassword.setText(clickedRow.getPassword());
                     //txtfld_dashboardPasswordText.setText(clickedRow.getPassword());
-                    txtfld_dashboardName.setText(clickedRow.getEmail());
+                    txtfld_dashboardUsername.setText(clickedRow.getUsername());
                     txtfld_dashboardWebsite.setText(clickedRow.getWebsite());
                     txtfld_dashboardEmail.setText(clickedRow.getEmail());
                     //System.out.println(clickedRow.getId());

@@ -1,8 +1,6 @@
 package application;
 	
 import javafx.application.Application;
-import javafx.scene.control.Label;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;

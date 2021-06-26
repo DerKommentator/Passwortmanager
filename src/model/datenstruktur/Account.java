@@ -1,6 +1,5 @@
 package model.datenstruktur;
 
-import java.nio.file.Path;
 
 public class Account {
     private String username;

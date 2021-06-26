@@ -1,6 +1,5 @@
 package model.sql;
 
-import com.sun.corba.se.spi.orb.StringPair;
 import model.datenstruktur.AccountInfo;
 
 import java.sql.*;

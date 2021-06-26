@@ -1,12 +1,6 @@
 package model.sql;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import model.datenstruktur.Account;
-import model.datenstruktur.AccountInfo;
-import org.sqlite.mc.SQLiteMCChacha20Config;
-
-import java.nio.file.Path;
-import java.security.AccessControlContext;
 import java.sql.*;
 import java.util.*;
 

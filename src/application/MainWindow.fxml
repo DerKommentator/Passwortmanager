@@ -104,7 +104,7 @@
                            <children>
                               <Button fx:id="btn_createAccountInTab" minHeight="20.0" minWidth="145.0" mnemonicParsing="false" text="Erstellen" GridPane.rowIndex="4">
                                  <GridPane.margin>
-                                    <Insets left="155.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Button>
                               <Label text="Account erstellen">
@@ -115,7 +115,10 @@
                                     <Insets bottom="20.0" left="12.0" />
                                  </GridPane.margin>
                               </Label>
-                              <Button fx:id="btn_cancelCreateAccount" minHeight="20.0" minWidth="145.0" mnemonicParsing="false" text="Abbrechen" GridPane.rowIndex="4" />
+                              <Button fx:id="btn_cancelCreateAccount" minHeight="20.0" minWidth="145.0" mnemonicParsing="false" text="Abbrechen" GridPane.rowIndex="4">
+                                 <GridPane.margin>
+                                    <Insets left="155.0" />
+                                 </GridPane.margin></Button>
                               <TextField fx:id="txtfld_createAccountUsername" maxHeight="25.0" maxWidth="300.0" promptText="Username" GridPane.rowIndex="1">
                                  <GridPane.margin>
                                     <Insets />
@@ -147,7 +150,7 @@
                   </BorderPane>
                </content>
           </Tab>
-            <Tab onSelectionChanged="#changeToInfoTab" text="Informationen">
+            <Tab onSelectionChanged="#changeToInfoTab" text="Dashboard">
                <content>
                   <BorderPane>
                      <center>
@@ -199,12 +202,12 @@
                               </VBox>
                               <VBox minWidth="700.0">
                                  <children>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Informationen:">
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Dashboard">
                                        <font>
                                           <Font size="31.0" />
                                        </font>
                                        <VBox.margin>
-                                          <Insets />
+                                          <Insets left="10.0" />
                                        </VBox.margin></Text>
                                     <GridPane>
                                       <columnConstraints>
@@ -249,7 +252,7 @@
                                                 <Insets bottom="10.0" top="10.0" />
                                              </GridPane.margin>
                                           </PasswordField>
-                                          <TextField fx:id="txtfld_dashboardName" editable="false" minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                          <TextField fx:id="txtfld_dashboardUsername" editable="false" minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                              <GridPane.margin>
                                                 <Insets bottom="10.0" top="10.0" />
                                              </GridPane.margin>
@@ -266,7 +269,7 @@
                                           </TextField>
                                           <Label text="Email:" GridPane.rowIndex="1" />
                                           <Label text="Website:" GridPane.rowIndex="2" />
-                                          <Label text="Name:" GridPane.rowIndex="3" />
+                                          <Label text="Username:" GridPane.rowIndex="3" />
                                           <Label text="Passwort:" GridPane.rowIndex="4" />
                                           <TextField fx:id="txtfld_dashboardPasswordText" editable="false" minHeight="30.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                              <GridPane.margin>
@@ -311,14 +314,6 @@
                      <center>
                         <VBox BorderPane.alignment="CENTER">
                            <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Informationen: ">
-                                 <font>
-                                    <Font size="31.0" />
-                                 </font>
-                                 <VBox.margin>
-                                    <Insets left="150.0" />
-                                 </VBox.margin>
-                              </Text>
                               <GridPane>
                                 <columnConstraints>
                                   <ColumnConstraints hgrow="SOMETIMES" />
@@ -326,6 +321,7 @@
                                     <ColumnConstraints hgrow="SOMETIMES" />
                                 </columnConstraints>
                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                   <RowConstraints vgrow="SOMETIMES" />
                                   <RowConstraints vgrow="SOMETIMES" />
                                   <RowConstraints vgrow="SOMETIMES" />
@@ -335,56 +331,64 @@
                                     <RowConstraints vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
-                                    <Button fx:id="btn_createNewPassword" mnemonicParsing="false" text="Hinzufügen" GridPane.rowIndex="6">
+                                    <Button fx:id="btn_createNewPassword" mnemonicParsing="false" text="Hinzufügen" GridPane.rowIndex="7">
                                        <GridPane.margin>
                                           <Insets bottom="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </Button>
-                                    <Label text="Email:" GridPane.rowIndex="2" />
-                                    <Label text="Website:" GridPane.rowIndex="3" />
-                                    <Label text="Name:" />
-                                    <Label text="Passwort:" GridPane.rowIndex="4" />
-                                    <TextField fx:id="txtfld_informationName" minWidth="300.0" GridPane.columnIndex="1">
+                                    <Label text="Email:" GridPane.rowIndex="3" />
+                                    <Label text="Website:" GridPane.rowIndex="4" />
+                                    <Label text="Name:" GridPane.rowIndex="1" />
+                                    <Label text="Passwort:" GridPane.rowIndex="5" />
+                                    <TextField fx:id="txtfld_informationName" minWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                        <GridPane.margin>
                                           <Insets bottom="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </TextField>
-                                    <TextField fx:id="txtfld_informationUsername" minWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    <TextField fx:id="txtfld_informationUsername" minWidth="300.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                        <GridPane.margin>
                                           <Insets bottom="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </TextField>
-                                    <TextField fx:id="txtfld_informationEmail" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                    <TextField fx:id="txtfld_informationEmail" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                        <GridPane.margin>
                                           <Insets bottom="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </TextField>
-                                    <PasswordField fx:id="txtfld_informationPassword" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                    <PasswordField fx:id="txtfld_informationPassword" GridPane.columnIndex="1" GridPane.rowIndex="5">
                                        <GridPane.margin>
                                           <Insets bottom="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </PasswordField>
-                                    <TextField fx:id="txtfld_informationWebsite" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                    <TextField fx:id="txtfld_informationWebsite" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                        <GridPane.margin>
                                           <Insets bottom="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </TextField>
-                                    <Label text="Username:" GridPane.rowIndex="1" />
-                                    <Button fx:id="btn_backToDashboardCreate" mnemonicParsing="false" onAction="#backToDashboardIsClicked" text="Zurück" GridPane.columnIndex="2" GridPane.rowIndex="6">
+                                    <Label text="Username:" GridPane.rowIndex="2" />
+                                    <Button fx:id="btn_backToDashboardCreate" mnemonicParsing="false" onAction="#backToDashboardIsClicked" text="Zurück" GridPane.columnIndex="2" GridPane.rowIndex="7">
                                        <GridPane.margin>
                                           <Insets left="10.0" />
                                        </GridPane.margin>
                                     </Button>
-                                    <TextField fx:id="txtfld_informationPasswordText" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                    <TextField fx:id="txtfld_informationPasswordText" GridPane.columnIndex="1" GridPane.rowIndex="5">
                                        <GridPane.margin>
                                           <Insets bottom="5.0" top="5.0" />
                                        </GridPane.margin>
                                     </TextField>
-                                    <CheckBox fx:id="chkbx_showAddInfoPassword" mnemonicParsing="false" text="Passwort anzeigen" GridPane.columnIndex="2" GridPane.rowIndex="4">
+                                    <CheckBox fx:id="chkbx_showAddInfoPassword" mnemonicParsing="false" text="Passwort anzeigen" GridPane.columnIndex="2" GridPane.rowIndex="5">
                                        <GridPane.margin>
                                           <Insets left="10.0" />
                                        </GridPane.margin>
                                     </CheckBox>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Eintrag hinzufügen: " GridPane.columnIndex="1">
+                                       <font>
+                                          <Font size="31.0" />
+                                       </font>
+                                       <GridPane.margin>
+                                          <Insets left="20.0" />
+                                       </GridPane.margin>
+                                    </Text>
                                  </children>
                               </GridPane>
                            </children>
@@ -477,12 +481,12 @@
                                           <Insets left="10.0" />
                                        </GridPane.margin>
                                     </CheckBox>
-                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Informationen bearbeiten: " GridPane.columnIndex="1">
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Eintrag bearbeiten: " GridPane.columnIndex="1">
                                        <font>
                                           <Font size="31.0" />
                                        </font>
                                        <GridPane.margin>
-                                          <Insets left="10.0" />
+                                          <Insets left="30.0" />
                                        </GridPane.margin>
                                     </Text>
                                  </children>
