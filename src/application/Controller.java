@@ -7,6 +7,8 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.AccessibleRole;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 
 import java.net.URL;
@@ -19,10 +21,13 @@ import java.util.function.UnaryOperator;
 import javafx.fxml.Initializable;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 import model.datenstruktur.Account;
 import model.datenstruktur.AccountInfo;
 import model.sql.*;
 import utils.BCrypt;
+import utils.Popup;
 
 import javax.activation.CommandObject;
 
@@ -283,29 +288,36 @@ public class Controller implements Initializable {
             //System.out.println("=============="+generatedSecurePasswordHash);
             String usersPasswordDBPath = username + ".db";
             Account erstellterAccount = new Account(username, email, generatedSecurePasswordHash, usersPasswordDBPath);
-
+            erstellterAccount.setDecryptedPassword(password);
             if (isRegistered(erstellterAccount)) {
                 tabPane_Main.getSelectionModel().select(0);
             } else {
-                System.out.println("Der Account konnte nicht erstellt werden.");
+                String errorHeader = "Registrierung - Datenbank";
+                String errorContent = "Der Account konnte nicht erstellt werden.";
+                Popup.showAlert(errorHeader, errorContent, Alert.AlertType.ERROR);
+                System.out.println(errorContent);
             }
 
         } else {
-            System.out.println("Der Account konnte nicht erstellt werden, da die Textfelder ausgefüllt werden müssen.");
+            String errorHeader = "Registrierung";
+            String errorContent = "Der Account konnte nicht erstellt werden, da die Textfelder ausgefüllt werden müssen.";
+            Popup.showAlert(errorHeader, errorContent, Alert.AlertType.ERROR);
+            System.out.println(errorContent);
         }
     }
 
     public Boolean isRegistered(Account user) {
         Connection conn = Database.createDatabaseConnection("users.db");
         if (UsersTable.insertNewUser(conn, user)) {
-            System.out.println("Der Account wurde erfolgreich erstellt.");
+            String alertContent = "Der Account wurde erfolgreich erstellt.";
+            System.out.println(alertContent);
             Database.closeDatabase(conn);
 
             //TODO: check if username is users - conflicts with users.db
             //TODO: autoincrement in users.db for id -> FIXED: use rowid instead of id column
 
             try {
-                Connection websiteConn = Database.createDatabaseConnection(user.getDBPath());
+                Connection websiteConn = Database.createPasswordDatabaseConnection(user.getDBPath(), user.getUsername(), user.getDecryptedPassword());
                 LinkedHashMap<String, Datatypes> columns = new LinkedHashMap<>();
                 columns.put("id", Datatypes.integer);
                 columns.put("name", Datatypes.text);
@@ -315,7 +327,12 @@ public class Controller implements Initializable {
                 columns.put("password", Datatypes.text);
                 AccountInfoTable.createNewTable(websiteConn, "data", columns);
             } catch (Exception e) {
-                System.out.println("Registration - CreateWebsiteDB: " + e.getMessage());
+                String errorHeader = "Registrierung";
+                String errorContent = "Der Account konnte nicht erstellt werden, da nicht alle Textfelder ausgefüllt wurden.";
+                System.out.println(errorContent);
+                Popup.showAlert(errorHeader, errorContent, Alert.AlertType.ERROR);
+
+                Popup.showException(e, "Registration", "Registration - CreatePasswordDB");
                 return false;
             }
 
@@ -347,10 +364,16 @@ public class Controller implements Initializable {
                 dataList.addAll(queryResults);
                 searchFilter();
             } else {
-                System.out.println("Login fehlgeschlagen.");
+                String alertHeader = "Login";
+                String alertContent = "Login fehlgeschlagen";
+                System.out.println(alertContent);
+                Popup.showAlert(alertHeader, alertContent, Alert.AlertType.ERROR);
             }
         } else {
-            System.out.println("Username oder Password sind leer.");
+            String alertHeader = "Login";
+            String alertContent = "Username oder Password sind leer.";
+            System.out.println(alertContent);
+            Popup.showAlert(alertHeader, alertContent, Alert.AlertType.ERROR);
         }
     }
 
@@ -369,6 +392,7 @@ public class Controller implements Initializable {
             resultSet = preparedStatement.executeQuery();
 
             user = UsersTable.parseDBResultSetEntries(resultSet);
+            user.setDecryptedPassword(password);
             System.out.println(user.getDBPath());
             /*while (resultSet.next()) {
                 userPassword = resultSet.getString("password");
@@ -377,7 +401,8 @@ public class Controller implements Initializable {
             return BCrypt.checkpw(password, user.getPassword());
 
         } catch (Exception e) {
-            System.out.println("Login Error: " + e.getMessage());
+            Popup.showException(e, "Login", "Login Error");
+            //System.out.println("Login Error: " + e.getMessage());
             return false;
         } finally {
             assert conn != null;
@@ -419,7 +444,7 @@ public class Controller implements Initializable {
             System.out.println("Name: " + erstellteAccountInfo.getName());
             System.out.println("Passwort: " + erstellteAccountInfo.getPassword());
 
-            Connection conn = Database.createDatabaseConnection(user.getDBPath());
+            Connection conn = Database.createPasswordDatabaseConnection(user.getDBPath(), user.getUsername(), user.getDecryptedPassword());
             AccountInfoTable.insert(conn, erstellteAccountInfo.getName(), erstellteAccountInfo.getEmail(), erstellteAccountInfo.getWebsite(), erstellteAccountInfo.getUsername(), erstellteAccountInfo.getPassword());
             Database.closeDatabase(conn);
 
@@ -429,7 +454,10 @@ public class Controller implements Initializable {
             dataList.addAll(queryResults);
 
         } else {
-            System.out.println("Die Website konnte nicht hinzugefügt werden, da alle Textfelder ausgefüllt werden müssen.");
+            String alertHeader = "Daten hinzufügen";
+            String alertContent = "Die Website konnte nicht hinzugefügt werden, da alle Textfelder ausgefüllt werden müssen.";
+            System.out.println(alertContent);
+            Popup.showAlert(alertHeader, alertContent, Alert.AlertType.ERROR);
         }
     }
 
@@ -443,7 +471,8 @@ public class Controller implements Initializable {
     // Passwort in Info-Tab bearbeiten
     @FXML
     private void editInfoIsClicked(AccountInfo accountInfo) {
-        if (!accountInfo.isEmpty()) {
+        if (accountInfo.getName() != null) {
+
             txtfld_editName.setText(accountInfo.getName());
             txtfld_editEmail.setText(accountInfo.getEmail());
             txtfld_editWebsite.setText(accountInfo.getWebsite());
@@ -451,29 +480,43 @@ public class Controller implements Initializable {
             txtfld_editPassword.setText(accountInfo.getPassword());
 
             tabPane_Main.getSelectionModel().select(4);
-            System.out.println("Ändern des Eintrags kann bearbeitet werden.");
+            System.out.println("Der Eintrag kann bearbeitet werden.");
         } else {
-            System.out.println("Error: Kein Eintrag ausgewählt");
+            String alertHeader = "Edit";
+            String alertContent = "Kein Eintrag ausgewählt";
+            System.out.println(alertContent);
+            Popup.showAlert(alertHeader, alertContent, Alert.AlertType.WARNING);
         }
     }
 
     @FXML
     private void deleteAccountInfoEntry(AccountInfo accountInfo) {
-        System.out.println("Lösche den Eintrag: " + accountInfo.getName());
+        if (accountInfo.getName() != null) {
 
-        Connection conn = Database.createDatabaseConnection(user.getDBPath());
-        boolean status = AccountInfoTable.delete(conn, accountInfo.getId());
+            System.out.println("Lösche den Eintrag: " + accountInfo.getName());
 
-        //TODO: verbessern, weil uneffizient
-        List<AccountInfo> queryResults = getDatabaseEntries(user.getDBPath(), conn);
-        dataList.remove(0, dataList.size());
-        dataList.addAll(queryResults);
-        Database.closeDatabase(conn);
+            Connection conn = Database.createPasswordDatabaseConnection(user.getDBPath(), user.getUsername(), user.getDecryptedPassword());
+            boolean status = AccountInfoTable.delete(conn, accountInfo.getId());
 
-        if (status) {
-            System.out.println("Löschen erfolgreich");
+            //TODO: verbessern, weil uneffizient
+            List<AccountInfo> queryResults = getDatabaseEntries(user.getDBPath(), conn);
+            dataList.remove(0, dataList.size());
+            dataList.addAll(queryResults);
+            Database.closeDatabase(conn);
+            System.out.println(accountInfo.getId());
+            if (status) {
+                System.out.println("Löschen erfolgreich");
+            } else {
+                String alertHeader = "Delete";
+                String alertContent = "Löschen fehlgeschlagen";
+                System.out.println(alertContent);
+                Popup.showAlert(alertHeader, alertContent, Alert.AlertType.ERROR);
+            }
         } else {
-            System.out.println("Löschen fehlgeschlagen");
+            String alertHeader = "Edit";
+            String alertContent = "Bitte wähle einen Eintrag aus";
+            System.out.println(alertContent);
+            Popup.showAlert(alertHeader, alertContent, Alert.AlertType.WARNING);
         }
     }
 
@@ -487,7 +530,7 @@ public class Controller implements Initializable {
         accountInfo.setUsername(txtfld_editUsername.getText());
         accountInfo.setPassword(txtfld_editPassword.getText());
 
-        Connection conn = Database.createDatabaseConnection(user.getDBPath());
+        Connection conn = Database.createPasswordDatabaseConnection(user.getDBPath(), user.getUsername(), user.getDecryptedPassword());
         boolean status = AccountInfoTable.update(
                 conn,
                 accountInfo.getName(),
@@ -501,20 +544,13 @@ public class Controller implements Initializable {
         if (status) {
             System.out.println("Update erfolgreich");
         } else {
-            System.out.println("Update fehlgeschlagen");
+            String alertHeader = "Update";
+            String alertContent = "Update fehlgeschalgen";
+            System.out.println(alertContent);
+            Popup.showAlert(alertHeader, alertContent, Alert.AlertType.ERROR);
         }
 
         tabPane_Main.getSelectionModel().select(2);
-    }
-
-    @FXML
-    private void showPassword(TextField txtfld) {
-        System.out.println("test: " + txtfld.getAccessibleRole());
-        if (txtfld.getAccessibleRole() == AccessibleRole.PASSWORD_FIELD) {
-            txtfld.setAccessibleRole(AccessibleRole.TEXT_FIELD);
-        } else {
-            txtfld.setAccessibleRole(AccessibleRole.PASSWORD_FIELD);
-        }
     }
 
     // Wechsel auf den Informations Tab
@@ -544,7 +580,8 @@ public class Controller implements Initializable {
 
     public List<AccountInfo> getDatabaseEntries(String dbPath, @Nullable Connection conn) {
         if (!dbPath.isEmpty()) {
-            conn = Database.createDatabaseConnection(dbPath);
+            conn = Database.createPasswordDatabaseConnection(dbPath, user.getUsername(), user.getDecryptedPassword());
+            //conn = Database.createDatabaseConnection(dbPath);
         }
 
         List<String> queryColumns = new ArrayList<String>();
@@ -632,7 +669,10 @@ public class Controller implements Initializable {
                     user.setPassword(generatedSecurePasswordHash);
                     //System.out.println("Neu: " + user.getPassword());
                 } else {
-                    System.out.println("Passwörter stimmen nicht überein");
+                    String alertHeader = "Settings";
+                    String alertContent = "Passwörter stimmen nicht überein";
+                    System.out.println(alertContent);
+                    Popup.showAlert(alertHeader, alertContent, Alert.AlertType.ERROR);
                 }
             }
 
@@ -644,10 +684,16 @@ public class Controller implements Initializable {
                 System.out.println("Update erfolgreich");
                 tabPane_Main.getSelectionModel().select(2);
             } else {
-                System.out.println("Update fehlgeschlagen");
+                String alertHeader = "Settings";
+                String alertContent = "Update fehlgeschlagen";
+                System.out.println(alertContent);
+                Popup.showAlert(alertHeader, alertContent, Alert.AlertType.ERROR);
             }
         } else {
-            System.out.println("Passwort stimmt nicht");
+            String alertHeader = "Settings";
+            String alertContent = "Passwort stimmt nicht";
+            System.out.println(alertContent);
+            Popup.showAlert(alertHeader, alertContent, Alert.AlertType.ERROR);
         }
     }
 
