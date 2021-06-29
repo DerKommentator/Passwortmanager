@@ -19,11 +19,11 @@ public class Popup {
         errorAlert.setHeaderText(headerText);
         errorAlert.setContentText(bodyText);
 
-        PauseTransition delay = new PauseTransition(Duration.seconds(2));
-        delay.setOnFinished(e -> errorAlert.hide());
+        //PauseTransition delay = new PauseTransition(Duration.seconds(2));
+        //delay.setOnFinished(e -> errorAlert.hide());
 
         errorAlert.show();
-        delay.play();
+        //delay.play();
     }
 
     public static void showException(Exception ex, String headerText, String bodyText) {
