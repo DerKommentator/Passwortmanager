@@ -1,5 +1,7 @@
 package application;
 
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import org.jetbrains.annotations.Nullable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -8,11 +10,15 @@ import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.*;
+import java.util.List;
 
 import javafx.fxml.Initializable;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -191,6 +197,10 @@ public class Controller implements Initializable {
 
 
     @FXML
+    private Button btn_copyToClipboard;
+
+
+    @FXML
     private Button btn_dashboardDelete;
 
     private final ObservableList<AccountInfo> dataList = FXCollections.observableArrayList();
@@ -230,6 +240,7 @@ public class Controller implements Initializable {
         chkbx_showSettingsOldPassword.setOnAction(e -> toggleVisiblePassword(chkbx_showSettingsOldPassword, txtfld_settingsOldPwText, txtfld_settingsOldPw));
         chkbx_showSettingsNewPassword.setOnAction(e -> toggleTwoVisiblePassword(chkbx_showSettingsNewPassword, txtfld_settingsNewPwText, txtfld_settingsNewPw, txtfld_settingsValNewPwText, txtfld_settingsValNewPw));
 
+        btn_copyToClipboard.setOnAction(e -> copyToClipboard(accountInfo));
 
         btn_dashboardDelete.setOnAction(e -> deleteAccountInfoEntry(accountInfo));
 
@@ -310,7 +321,7 @@ public class Controller implements Initializable {
             //TODO: autoincrement in users.db for id -> FIXED: use rowid instead of id column
 
             try {
-                Connection websiteConn = Database.createPasswordDatabaseConnection(user.getDBPath(), user.getUsername(), user.getDecryptedPassword());
+                Connection websiteConn = Database.createPasswordDatabaseConnection(user.getDBPath(), user.getUsername(), user.getPassword());
                 LinkedHashMap<String, Datatypes> columns = new LinkedHashMap<>();
                 columns.put("id", Datatypes.integer);
                 columns.put("name", Datatypes.text);
@@ -506,7 +517,7 @@ public class Controller implements Initializable {
                 Popup.showAlert(alertHeader, alertContent, Alert.AlertType.ERROR);
             }
         } else {
-            String alertHeader = "Edit";
+            String alertHeader = "Delete";
             String alertContent = "Bitte wähle einen Eintrag aus";
             System.out.println(alertContent);
             Popup.showAlert(alertHeader, alertContent, Alert.AlertType.WARNING);
@@ -722,6 +733,21 @@ public class Controller implements Initializable {
         passwordField2.setText(textField2.getText());
         passwordField2.setVisible(true);
         textField2.setVisible(false);
+    }
+
+
+
+    private void copyToClipboard(AccountInfo accountInfo) {
+        if (accountInfo.getName() != null) {
+            StringSelection stringSelection = new StringSelection(accountInfo.getPassword());
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(stringSelection, null);
+        } else {
+            String alertHeader = "Zwischenablage";
+            String alertContent = "Bitte wähle einen Eintrag aus";
+            System.out.println(alertContent);
+            Popup.showAlert(alertHeader, alertContent, Alert.AlertType.WARNING);
+        }
     }
 
 }
