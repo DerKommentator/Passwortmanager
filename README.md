@@ -5,6 +5,8 @@ Used to store passwords, so that they no longer have to be written on a piece of
 
 A database is created for all registered users and a database for each user with their password entries.
 
+JDBC driver to encrypt databases: [sqlite-jdbc-crypt](https://github.com/Willena/sqlite-jdbc-crypt)
+
 ## Registration:
 ![Registration](docs/Registration.png)
 
