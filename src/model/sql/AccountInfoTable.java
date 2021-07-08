@@ -105,6 +105,9 @@ public class AccountInfoTable {
     }
 
     public static List<AccountInfo> query(Connection conn, List<String> columnNames) {
+        if (conn == null) {
+            return new ArrayList<AccountInfo>();
+        }
         StringBuilder sql = new StringBuilder("SELECT ");
         List<AccountInfo> returnAccountInfos = new ArrayList<>();
 

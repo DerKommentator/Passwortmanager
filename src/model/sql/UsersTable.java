@@ -199,13 +199,13 @@ public class UsersTable {
     public static Account parseDBResultSetEntries(ResultSet resultSet) {
         Account account = new Account();
         try {
-            while (resultSet.next()) {
+            do {
                 account.setUsername(resultSet.getString("username"));
                 account.setEmail(resultSet.getString("email"));
                 account.setPassword(resultSet.getString("password"));
                 account.setDBPath(resultSet.getString("dbPath"));
                 account.setId(resultSet.getLong("rowid"));
-            }
+            } while (resultSet.next());
         } catch (SQLException e) {
             System.out.println("ERROR - DB parseAccount: " + e.getMessage());
         }

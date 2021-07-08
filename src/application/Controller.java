@@ -1,8 +1,8 @@
 package application;
 
+import com.sun.istack.internal.Nullable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import org.jetbrains.annotations.Nullable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -13,6 +13,7 @@ import javafx.scene.control.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.io.File;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -32,139 +33,112 @@ import utils.Popup;
 
 public class Controller implements Initializable {
 
+    // Tabs (switching between pages)
     @FXML
     private TabPane tabPane_Main;
 
+
+
+    // Login
     @FXML
     private TextField field_username;
-
     @FXML
     private PasswordField field_password;
     @FXML
     private TextField txtfld_loginPasswordText;
-
     @FXML
     private Button btn_login;
-
-    @FXML
-    private Button btn_logout;
-
-    @FXML
-    private Button btn_cancelCreateAccount;
-
-    @FXML
-    private Button btn_createAccountInTab;
-
     @FXML
     private Button btn_createAccount;
-
     @FXML
-    private Button btn_createNewPassword;
+    private CheckBox chkbx_showLoginPassword;
 
-    @FXML
-    private Button btn_changeInfo;
 
-    @FXML
-    private Button btn_editInfo;
 
-    @FXML
-    private Button btn_addPassword;
-
-    @FXML
-    private ListView<String> listView_dashboardListEntries;
-
+    // Create Account / Registration
     @FXML
     private TextField txtfld_createAccountUsername;
-
+    @FXML
+    private TextField txtfld_createAccountEmail;
     @FXML
     private PasswordField txtfld_createAccountPassword;
     @FXML
     private TextField txtfld_createAccountPasswordText;
+    @FXML
+    private Button btn_cancelCreateAccount;
+    @FXML
+    private Button btn_createAccountInTab;
+    @FXML
+    private CheckBox chkbx_showCreateAccPassword;
+
+
+
+    // Dashboard
+    @FXML
+    private TextField filterField;
 
     @FXML
-    private TextField txtfld_createAccountEmail;
+    private TableView<AccountInfo> tableView;
+    @FXML
+    private TableColumn<AccountInfo, String> tableView_name;
+    @FXML
+    private TableColumn<AccountInfo, String> tableView_username;
+    @FXML
+    private TableColumn<AccountInfo, String> tableView_email;
+    @FXML
+    private TableColumn<AccountInfo, String> tableView_website;
 
     @FXML
-    private PasswordField txtfld_informationPassword;
+    private Button btn_changeToSettingsTab;
     @FXML
-    private TextField txtfld_informationPasswordText;
+    private Button btn_logout;
+    @FXML
+    private Button btn_addPassword;
+    @FXML
+    private Button btn_editInfo;
+    @FXML
+    private Button btn_dashboardDelete;
 
     @FXML
-    private TextField txtfld_informationName;
-
+    private TextField txtfld_dashboardEmail;
     @FXML
-    private TextField txtfld_informationWebsite;
-
+    private TextField txtfld_dashboardWebsite;
     @FXML
-    private TextField txtfld_informationEmail;
+    private TextField txtfld_dashboardUsername;
 
     @FXML
     private PasswordField txtfld_dashboardPassword;
     @FXML
     private TextField txtfld_dashboardPasswordText;
-
     @FXML
-    private TextField txtfld_dashboardUsername;
-
-    @FXML
-    private TextField txtfld_dashboardWebsite;
-
-    @FXML
-    private TextField txtfld_dashboardEmail;
-
-    //@FXML
-    //private Button btn_showLoginPassword;
-    @FXML
-    private CheckBox chkbx_showLoginPassword;
-    //@FXML
-    //private Button btn_showCreateAccPassword;
-    @FXML
-    private CheckBox chkbx_showCreateAccPassword;
-    //@FXML
-    //private Button btn_showDashbordPassword;
+    private Button btn_copyToClipboard;
     @FXML
     private CheckBox chkbx_showDashbordPassword;
-    //@FXML
-    //private Button btn_showAddInfoPassword;
-    @FXML
-    private CheckBox chkbx_showAddInfoPassword;
-    //@FXML
-    //private Button btn_showEditInfoPassword;
-    @FXML
-    private CheckBox chkbx_showEditInfoPassword;
-    @FXML
-    private CheckBox chkbx_showSettingsOldPassword;
-    @FXML
-    private CheckBox chkbx_showSettingsNewPassword;
 
 
-    @FXML
-    private TextField filterField;
 
+    // Add New Password Entry
     @FXML
-    private PasswordField txtfld_editPassword;
-    @FXML
-    private TextField txtfld_editPasswordText;
-
-    @FXML
-    private TableView<AccountInfo> tableView;
-
-    @FXML
-    private TableColumn<AccountInfo, String> tableView_name;
-
-    @FXML
-    private TableColumn<AccountInfo, String> tableView_username;
-
-    @FXML
-    private TableColumn<AccountInfo, String> tableView_email;
-
-    @FXML
-    private TableColumn<AccountInfo, String> tableView_website;
-
+    private TextField txtfld_informationName;
     @FXML
     private TextField txtfld_informationUsername;
+    @FXML
+    private TextField txtfld_informationEmail;
+    @FXML
+    private TextField txtfld_informationWebsite;
+    @FXML
+    private PasswordField txtfld_informationPassword;
+    @FXML
+    private TextField txtfld_informationPasswordText;
+    @FXML
+    private CheckBox chkbx_showAddInfoPassword;
+
+    @FXML
+    private Button btn_createNewPassword;
 
 
+
+    // Edit Password Entry
     @FXML
     private TextField txtfld_editName;
     @FXML
@@ -173,39 +147,49 @@ public class Controller implements Initializable {
     private TextField txtfld_editWebsite;
     @FXML
     private TextField txtfld_editUsername;
-    //@FXML
-    //private TextField txtfld_editPassword;
+    @FXML
+    private PasswordField txtfld_editPassword;
+    @FXML
+    private TextField txtfld_editPasswordText;
+    @FXML
+    private CheckBox chkbx_showEditInfoPassword;
 
     @FXML
-    private Button btn_changeToSettingsTab;
-    @FXML
-    private Button btn_changeSettings;
-    @FXML
-    private TextField txtfld_settingsEmail;
+    private Button btn_changeInfo;
+
+
+
+    // Settings
     @FXML
     private PasswordField txtfld_settingsOldPw;
     @FXML
     private TextField txtfld_settingsOldPwText;
     @FXML
+    private CheckBox chkbx_showSettingsOldPassword;
+
+    @FXML
     private PasswordField txtfld_settingsNewPw;
     @FXML
     private TextField txtfld_settingsNewPwText;
+    @FXML
+    private CheckBox chkbx_showSettingsNewPassword;
     @FXML
     private PasswordField txtfld_settingsValNewPw;
     @FXML
     private TextField txtfld_settingsValNewPwText;
 
+    @FXML
+    private TextField txtfld_settingsEmail;
 
     @FXML
-    private Button btn_copyToClipboard;
+    private Button btn_changeSettings;
 
 
-    @FXML
-    private Button btn_dashboardDelete;
+
+    // Controller
 
     private final ObservableList<AccountInfo> dataList = FXCollections.observableArrayList();
     private Account user = new Account();
-
     private AccountInfo accountInfo = new AccountInfo();
 
     @Override
@@ -220,7 +204,6 @@ public class Controller implements Initializable {
         btn_editInfo.setOnAction(e -> editInfoIsClicked(accountInfo));
         btn_changeInfo.setOnAction(e -> updateEntry());
 
-        //btn_showDashbordPassword.setOnAction(e -> showPassword(txtfld_dashboardPassword));
         this.toggleVisiblePassword(chkbx_showDashbordPassword, txtfld_dashboardPasswordText, txtfld_dashboardPassword);
         this.toggleVisiblePassword(chkbx_showDashbordPassword, txtfld_dashboardPasswordText, txtfld_dashboardPassword);
         this.toggleVisiblePassword(chkbx_showLoginPassword, txtfld_loginPasswordText, field_password);
@@ -255,6 +238,52 @@ public class Controller implements Initializable {
 
     }
 
+
+
+    // --------------------------------------- Login ------------------------------------------------------
+    // Login
+    @FXML
+    private void loginIsClicked(javafx.event.ActionEvent actionEvent) {
+        String username = field_username.getText();
+        String password = field_password.getText();
+
+        File userDatabase = new File("users.db");
+        if (!userDatabase.exists()) {
+            Popup.showAlert("Login", "Bitte lege zuerst einen User an!", Alert.AlertType.ERROR);
+            return;
+        }
+
+        if (!username.isEmpty() && !password.isEmpty()) {
+            if (isLogin(username, password)) {
+                System.out.println("Login erfolgreich.");
+                tabPane_Main.getSelectionModel().select(2);
+                user.setDBPath(username + ".db");
+                user.setUsername(username);
+                List<AccountInfo> queryResults = getDatabaseEntries(user.getDBPath(), null);
+
+                if (!dataList.isEmpty()) {
+                    //TODO: verbessern, weil uneffizient
+                    dataList.remove(0, dataList.size());
+                }
+
+                dataList.addAll(queryResults);
+                searchFilter();
+            }
+            else {
+                String alertHeader = "Login";
+                String alertContent = "Login fehlgeschlagen";
+                System.out.println(alertContent);
+                Popup.showAlert(alertHeader, alertContent, Alert.AlertType.ERROR);
+            }
+        } else {
+            String alertHeader = "Login";
+            String alertContent = "Username oder Password sind leer.";
+            System.out.println(alertContent);
+            Popup.showAlert(alertHeader, alertContent, Alert.AlertType.ERROR);
+        }
+    }
+
+
     // Account-Erstellungs Button beim Login
     @FXML
     private void createAccountisClicked(javafx.event.ActionEvent actionEvent) {
@@ -272,13 +301,10 @@ public class Controller implements Initializable {
         System.out.println("Account kann nun erstellt werden.");
     }
 
-    // Abbruch beim Account erstellen
-    @FXML
-    private void cancelCreateAccountIsClicked(javafx.event.ActionEvent actionEvent) {
-        tabPane_Main.getSelectionModel().select(0);
-        System.out.println("Account-Erstellung abgebrochen.");
-    }
 
+
+
+    // --------------------------------------- Create Account / Registration ------------------------------
     // Account-Erstellung
     @FXML
     private void createAccountInTabIsClicked(javafx.event.ActionEvent actionEvent) {
@@ -346,219 +372,20 @@ public class Controller implements Initializable {
         return false;
     }
 
-    // Login
+
+    // Abbruch beim Account erstellen
     @FXML
-    private void loginIsClicked(javafx.event.ActionEvent actionEvent) {
-        String username = field_username.getText();
-        String password = field_password.getText();
-
-        if (!username.isEmpty() && !password.isEmpty()) {
-            if (isLogin(username, password)) {
-                System.out.println("Login erfolgreich.");
-                tabPane_Main.getSelectionModel().select(2);
-                user.setDBPath(username + ".db");
-                user.setUsername(username);
-                List<AccountInfo> queryResults = getDatabaseEntries(user.getDBPath(), null);
-
-                if (!dataList.isEmpty()) {
-                    //TODO: verbessern, weil uneffizient
-                    dataList.remove(0, dataList.size());
-                }
-
-                dataList.addAll(queryResults);
-                searchFilter();
-            } else {
-                String alertHeader = "Login";
-                String alertContent = "Login fehlgeschlagen";
-                System.out.println(alertContent);
-                Popup.showAlert(alertHeader, alertContent, Alert.AlertType.ERROR);
-            }
-        } else {
-            String alertHeader = "Login";
-            String alertContent = "Username oder Password sind leer.";
-            System.out.println(alertContent);
-            Popup.showAlert(alertHeader, alertContent, Alert.AlertType.ERROR);
-        }
-    }
-
-    public boolean isLogin(String username, String password) {
-        PreparedStatement preparedStatement;
-        ResultSet resultSet;
-
-        String query = "SELECT rowid, username, email, password, dbPath FROM users WHERE username = ?";
-        Connection conn = null;
-
-        try {
-            conn = Database.createDatabaseConnection("users.db");
-            preparedStatement = conn.prepareStatement(query);
-            preparedStatement.setString(1, username);
-
-            resultSet = preparedStatement.executeQuery();
-
-            user = UsersTable.parseDBResultSetEntries(resultSet);
-            user.setDecryptedPassword(password);
-            System.out.println(user.getDBPath());
-            /*while (resultSet.next()) {
-                userPassword = resultSet.getString("password");
-                //System.out.println(".........."+userPassword);
-            }*/
-            return BCrypt.checkpw(password, user.getPassword());
-
-        } catch (Exception e) {
-            Popup.showException(e, "Login", "Login Error");
-            //System.out.println("Login Error: " + e.getMessage());
-            return false;
-        } finally {
-            assert conn != null;
-            Database.closeDatabase(conn);
-        }
-    }
-
-    // Zurueck zum Dashboard
-    @FXML
-    private void backToDashboardIsClicked(javafx.event.ActionEvent actionEvent) {
-        tabPane_Main.getSelectionModel().select(2);
-        System.out.println("Zurück zum Dashboard.");
-    }
-
-    // Logut
-    @FXML
-    private void logoutIsClicked(javafx.event.ActionEvent actionEvent) {
+    private void cancelCreateAccountIsClicked(javafx.event.ActionEvent actionEvent) {
         tabPane_Main.getSelectionModel().select(0);
-        System.out.println("Logout.");
-    }
-
-    // neues Passwort hinzufügen
-    @FXML
-    private void createNewPasswordIsClicked(javafx.event.ActionEvent actionEvent) {
-        tabPane_Main.getSelectionModel().select(2);
-
-        // Daten aus Textfelder holen
-        String email = txtfld_informationEmail.getText();
-        String website = txtfld_informationWebsite.getText();
-        String name = txtfld_informationName.getText();
-        String password = txtfld_informationPassword.getText();
-        String username = txtfld_informationUsername.getText();
-
-        if (email != null && website != null && name != null && password != null && username != null) {
-            AccountInfo erstellteAccountInfo = new AccountInfo(email, website, name, password, username);
-            System.out.println("Die Website wurde erfolgreich hinzugefügt.");
-            System.out.println("Email: " + erstellteAccountInfo.getEmail());
-            System.out.println("Website: " + erstellteAccountInfo.getWebsite());
-            System.out.println("Name: " + erstellteAccountInfo.getName());
-            System.out.println("Passwort: " + erstellteAccountInfo.getPassword());
-
-            Connection conn = Database.createPasswordDatabaseConnection(user.getDBPath(), user.getUsername(), user.getDecryptedPassword());
-            AccountInfoTable.insert(conn, erstellteAccountInfo.getName(), erstellteAccountInfo.getEmail(), erstellteAccountInfo.getWebsite(), erstellteAccountInfo.getUsername(), erstellteAccountInfo.getPassword());
-            Database.closeDatabase(conn);
-
-            //TODO: verbessern, weil uneffizient
-            List<AccountInfo> queryResults = getDatabaseEntries(user.getDBPath(), null);
-            dataList.remove(0, dataList.size());
-            dataList.addAll(queryResults);
-
-        } else {
-            String alertHeader = "Daten hinzufügen";
-            String alertContent = "Die Website konnte nicht hinzugefügt werden, da alle Textfelder ausgefüllt werden müssen.";
-            System.out.println(alertContent);
-            Popup.showAlert(alertHeader, alertContent, Alert.AlertType.ERROR);
-        }
-    }
-
-    // Passwort in Info-Tab hinzufügen (Ohne Hinzufügen)
-    @FXML
-    private void addPasswordIsClicked(javafx.event.ActionEvent actionEvent) {
-        tabPane_Main.getSelectionModel().select(3);
-        System.out.println("Neues Passwort kann hinzugefügt werden.");
-    }
-
-    // Passwort in Info-Tab bearbeiten
-    @FXML
-    private void editInfoIsClicked(AccountInfo accountInfo) {
-        if (accountInfo.getName() != null) {
-
-            txtfld_editName.setText(accountInfo.getName());
-            txtfld_editEmail.setText(accountInfo.getEmail());
-            txtfld_editWebsite.setText(accountInfo.getWebsite());
-            txtfld_editUsername.setText(accountInfo.getUsername());
-            txtfld_editPassword.setText(accountInfo.getPassword());
-
-            tabPane_Main.getSelectionModel().select(4);
-            System.out.println("Der Eintrag kann bearbeitet werden.");
-        } else {
-            String alertHeader = "Edit";
-            String alertContent = "Kein Eintrag ausgewählt";
-            System.out.println(alertContent);
-            Popup.showAlert(alertHeader, alertContent, Alert.AlertType.WARNING);
-        }
-    }
-
-    @FXML
-    private void deleteAccountInfoEntry(AccountInfo accountInfo) {
-        if (accountInfo.getName() != null) {
-
-            System.out.println("Lösche den Eintrag: " + accountInfo.getName());
-
-            Connection conn = Database.createPasswordDatabaseConnection(user.getDBPath(), user.getUsername(), user.getDecryptedPassword());
-            boolean status = AccountInfoTable.delete(conn, accountInfo.getId());
-
-            //TODO: verbessern, weil uneffizient
-            List<AccountInfo> queryResults = getDatabaseEntries(user.getDBPath(), conn);
-            dataList.remove(0, dataList.size());
-            dataList.addAll(queryResults);
-            Database.closeDatabase(conn);
-            System.out.println(accountInfo.getId());
-            if (status) {
-                System.out.println("Löschen erfolgreich");
-            } else {
-                String alertHeader = "Delete";
-                String alertContent = "Löschen fehlgeschlagen";
-                System.out.println(alertContent);
-                Popup.showAlert(alertHeader, alertContent, Alert.AlertType.ERROR);
-            }
-        } else {
-            String alertHeader = "Delete";
-            String alertContent = "Bitte wähle einen Eintrag aus";
-            System.out.println(alertContent);
-            Popup.showAlert(alertHeader, alertContent, Alert.AlertType.WARNING);
-        }
+        System.out.println("Account-Erstellung abgebrochen.");
     }
 
 
-    // vorhandes Passwort bearbeiten
-    @FXML
-    private void updateEntry() {
-        accountInfo.setName(txtfld_editName.getText());
-        accountInfo.setEmail(txtfld_editEmail.getText());
-        accountInfo.setWebsite(txtfld_editWebsite.getText());
-        accountInfo.setUsername(txtfld_editUsername.getText());
-        accountInfo.setPassword(txtfld_editPassword.getText());
 
-        Connection conn = Database.createPasswordDatabaseConnection(user.getDBPath(), user.getUsername(), user.getDecryptedPassword());
-        boolean status = AccountInfoTable.update(
-                conn,
-                accountInfo.getName(),
-                accountInfo.getEmail(),
-                accountInfo.getWebsite(),
-                accountInfo.getUsername(),
-                accountInfo.getPassword(),
-                accountInfo.getId()
-        );
 
-        if (status) {
-            System.out.println("Update erfolgreich");
-        } else {
-            String alertHeader = "Update";
-            String alertContent = "Update fehlgeschalgen";
-            System.out.println(alertContent);
-            Popup.showAlert(alertHeader, alertContent, Alert.AlertType.ERROR);
-        }
+    // --------------------------------------- Dashboard --------------------------------------------------
 
-        tabPane_Main.getSelectionModel().select(2);
-    }
-
-    // Wechsel auf den Informations Tab
-    //TODO
+    // Wechsel auf den Dashboard Tab
     @FXML
     private void changeToInfoTab() {
         System.out.println("Lade Daten aus Datenbank");
@@ -579,40 +406,6 @@ public class Controller implements Initializable {
             });
             return row;
         });
-    }
-
-
-    public List<AccountInfo> getDatabaseEntries(String dbPath, @Nullable Connection conn) {
-        if (!dbPath.isEmpty()) {
-            conn = Database.createPasswordDatabaseConnection(dbPath, user.getUsername(), user.getDecryptedPassword());
-            //conn = Database.createDatabaseConnection(dbPath);
-        }
-
-        List<String> queryColumns = new ArrayList<String>();
-        queryColumns.add("id");
-        queryColumns.add("name");
-        queryColumns.add("email");
-        queryColumns.add("website");
-        queryColumns.add("username");
-        queryColumns.add("password");
-
-        List<AccountInfo> accountsFromDB = AccountInfoTable.query(conn, queryColumns);
-
-        /*for (Map.Entry<String, String> entry: queryResult.entrySet()) {
-            String columnName = entry.getKey();
-            String value = entry.getValue();
-
-            System.out.println(columnName);
-            System.out.println(value);
-            if (columnName.equals("name")) {
-                //listView_dashboardListEntries.getItems().add(value);
-
-            }
-        }*/
-
-        Database.closeDatabase(conn);
-
-        return accountsFromDB;
     }
 
     public void searchFilter() {
@@ -644,8 +437,175 @@ public class Controller implements Initializable {
         tableView.setItems(sortedData);
     }
 
+    // Passwort in Info-Tab hinzufügen (Ohne Hinzufügen)
+    @FXML
+    private void addPasswordIsClicked(javafx.event.ActionEvent actionEvent) {
+        tabPane_Main.getSelectionModel().select(3);
+        System.out.println("Neues Passwort kann hinzugefügt werden.");
+    }
 
-    // Settings
+    // Passwort in Info-Tab bearbeiten
+    @FXML
+    private void editInfoIsClicked(AccountInfo accountInfo) {
+        if (accountInfo.getName() != null) {
+
+            txtfld_editName.setText(accountInfo.getName());
+            txtfld_editEmail.setText(accountInfo.getEmail());
+            txtfld_editWebsite.setText(accountInfo.getWebsite());
+            txtfld_editUsername.setText(accountInfo.getUsername());
+            txtfld_editPassword.setText(accountInfo.getPassword());
+
+            tabPane_Main.getSelectionModel().select(4);
+            System.out.println("Der Eintrag kann bearbeitet werden.");
+        } else {
+            String alertHeader = "Edit";
+            String alertContent = "Kein Eintrag ausgewählt";
+            System.out.println(alertContent);
+            Popup.showAlert(alertHeader, alertContent, Alert.AlertType.WARNING);
+        }
+    }
+
+    private void copyToClipboard(AccountInfo accountInfo) {
+        if (accountInfo.getName() != null) {
+            StringSelection stringSelection = new StringSelection(accountInfo.getPassword());
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(stringSelection, null);
+        } else {
+            String alertHeader = "Zwischenablage";
+            String alertContent = "Bitte wähle einen Eintrag aus";
+            System.out.println(alertContent);
+            Popup.showAlert(alertHeader, alertContent, Alert.AlertType.WARNING);
+        }
+    }
+
+
+    // Delete a password entry
+    @FXML
+    private void deleteAccountInfoEntry(AccountInfo accountInfo) {
+        if (accountInfo.getName() != null) {
+
+            System.out.println("Lösche den Eintrag: " + accountInfo.getName());
+
+            Connection conn = Database.createPasswordDatabaseConnection(user.getDBPath(), user.getUsername(), user.getDecryptedPassword());
+            assert conn != null;
+            boolean status = AccountInfoTable.delete(conn, accountInfo.getId());
+
+            //TODO: verbessern, weil uneffizient
+            List<AccountInfo> queryResults = getDatabaseEntries(user.getDBPath(), conn);
+            dataList.remove(0, dataList.size());
+            dataList.addAll(queryResults);
+            Database.closeDatabase(conn);
+            System.out.println(accountInfo.getId());
+            if (status) {
+                System.out.println("Löschen erfolgreich");
+            } else {
+                String alertHeader = "Delete";
+                String alertContent = "Löschen fehlgeschlagen";
+                System.out.println(alertContent);
+                Popup.showAlert(alertHeader, alertContent, Alert.AlertType.ERROR);
+            }
+        } else {
+            String alertHeader = "Delete";
+            String alertContent = "Bitte wähle einen Eintrag aus";
+            System.out.println(alertContent);
+            Popup.showAlert(alertHeader, alertContent, Alert.AlertType.WARNING);
+        }
+    }
+
+
+    // Logut
+    @FXML
+    private void logoutIsClicked(javafx.event.ActionEvent actionEvent) {
+        tabPane_Main.getSelectionModel().select(0);
+        System.out.println("Logout.");
+    }
+
+
+
+
+    // --------------------------------------- Add New Password Entry -------------------------------------
+
+    // neues Passwort hinzufügen
+    @FXML
+    private void createNewPasswordIsClicked(javafx.event.ActionEvent actionEvent) {
+        tabPane_Main.getSelectionModel().select(2);
+
+        // Daten aus Textfelder holen
+        String email = txtfld_informationEmail.getText();
+        String website = txtfld_informationWebsite.getText();
+        String name = txtfld_informationName.getText();
+        String password = txtfld_informationPassword.getText();
+        String username = txtfld_informationUsername.getText();
+
+        if (email != null && website != null && name != null && password != null && username != null) {
+            AccountInfo erstellteAccountInfo = new AccountInfo(email, website, name, password, username);
+            System.out.println("Die Website wurde erfolgreich hinzugefügt.");
+            System.out.println("Email: " + erstellteAccountInfo.getEmail());
+            System.out.println("Website: " + erstellteAccountInfo.getWebsite());
+            System.out.println("Name: " + erstellteAccountInfo.getName());
+            System.out.println("Passwort: " + erstellteAccountInfo.getPassword());
+
+            Connection conn = Database.createPasswordDatabaseConnection(user.getDBPath(), user.getUsername(), user.getDecryptedPassword());
+            assert conn != null;
+            AccountInfoTable.insert(conn, erstellteAccountInfo.getName(), erstellteAccountInfo.getEmail(), erstellteAccountInfo.getWebsite(), erstellteAccountInfo.getUsername(), erstellteAccountInfo.getPassword());
+            Database.closeDatabase(conn);
+
+            //TODO: verbessern, weil uneffizient
+            List<AccountInfo> queryResults = getDatabaseEntries(user.getDBPath(), null);
+            dataList.remove(0, dataList.size());
+            dataList.addAll(queryResults);
+
+        } else {
+            String alertHeader = "Daten hinzufügen";
+            String alertContent = "Die Website konnte nicht hinzugefügt werden, da alle Textfelder ausgefüllt werden müssen.";
+            System.out.println(alertContent);
+            Popup.showAlert(alertHeader, alertContent, Alert.AlertType.ERROR);
+        }
+    }
+
+
+
+
+    // --------------------------------------- Edit Password Entry ----------------------------------------
+
+    // vorhandes Passwort bearbeiten
+    @FXML
+    private void updateEntry() {
+        accountInfo.setName(txtfld_editName.getText());
+        accountInfo.setEmail(txtfld_editEmail.getText());
+        accountInfo.setWebsite(txtfld_editWebsite.getText());
+        accountInfo.setUsername(txtfld_editUsername.getText());
+        accountInfo.setPassword(txtfld_editPassword.getText());
+
+        Connection conn = Database.createPasswordDatabaseConnection(user.getDBPath(), user.getUsername(), user.getDecryptedPassword());
+        assert conn != null;
+        boolean status = AccountInfoTable.update(
+                conn,
+                accountInfo.getName(),
+                accountInfo.getEmail(),
+                accountInfo.getWebsite(),
+                accountInfo.getUsername(),
+                accountInfo.getPassword(),
+                accountInfo.getId()
+        );
+
+        if (status) {
+            System.out.println("Update erfolgreich");
+        } else {
+            String alertHeader = "Update";
+            String alertContent = "Update fehlgeschalgen";
+            System.out.println(alertContent);
+            Popup.showAlert(alertHeader, alertContent, Alert.AlertType.ERROR);
+        }
+
+        tabPane_Main.getSelectionModel().select(2);
+    }
+
+
+
+
+    // --------------------------------------- Settings ---------------------------------------------------
+
     @FXML
     private void changeToSettingsTab() {
         txtfld_settingsEmail.setText(user.getEmail());
@@ -701,6 +661,98 @@ public class Controller implements Initializable {
         }
     }
 
+
+
+
+
+
+    // --------------------------------------- Global Methods ---------------------------------------------------
+
+    public boolean isLogin(String username, String password) {
+        PreparedStatement preparedStatement;
+        ResultSet resultSet;
+
+        String query = "SELECT rowid, username, email, password, dbPath FROM users WHERE username = ?";
+        Connection conn = null;
+
+        File userDatabase = new File("users.db");
+        if (!userDatabase.exists()) {
+            Popup.showAlert("Login", "Bitte lege zuerst einen User an!", Alert.AlertType.ERROR);
+            return false;
+        }
+
+        try {
+            conn = Database.createDatabaseConnection("users.db");
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setString(1, username);
+
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                user = UsersTable.parseDBResultSetEntries(resultSet);
+                user.setDecryptedPassword(password);
+                System.out.println(user.getDBPath());
+                /*while (resultSet.next()) {
+                    userPassword = resultSet.getString("password");
+                    //System.out.println(".........."+userPassword);
+                }*/
+                return BCrypt.checkpw(password, user.getPassword());
+            } else {
+                Popup.showAlert("Login", "User existiert nicht!", Alert.AlertType.ERROR);
+                return false;
+            }
+        } catch (Exception e) {
+            Popup.showException(e, "Login", "Login Error");
+            //System.out.println("Login Error: " + e.getMessage());
+            return false;
+        } finally {
+            assert conn != null;
+            Database.closeDatabase(conn);
+        }
+    }
+
+    // Zurueck zum Dashboard
+    @FXML
+    private void backToDashboardIsClicked(javafx.event.ActionEvent actionEvent) {
+        tabPane_Main.getSelectionModel().select(2);
+        System.out.println("Zurück zum Dashboard.");
+    }
+
+
+    public List<AccountInfo> getDatabaseEntries(String dbPath, @Nullable Connection conn) {
+        if (!dbPath.isEmpty()) {
+            conn = Database.createPasswordDatabaseConnection(dbPath, user.getUsername(), user.getDecryptedPassword());
+            //conn = Database.createDatabaseConnection(dbPath);
+        }
+
+        List<String> queryColumns = new ArrayList<String>();
+        queryColumns.add("id");
+        queryColumns.add("name");
+        queryColumns.add("email");
+        queryColumns.add("website");
+        queryColumns.add("username");
+        queryColumns.add("password");
+
+        List<AccountInfo> accountsFromDB = AccountInfoTable.query(conn, queryColumns);
+
+        /*for (Map.Entry<String, String> entry: queryResult.entrySet()) {
+            String columnName = entry.getKey();
+            String value = entry.getValue();
+
+            System.out.println(columnName);
+            System.out.println(value);
+            if (columnName.equals("name")) {
+                //listView_dashboardListEntries.getItems().add(value);
+
+            }
+        }*/
+
+        assert conn != null;
+        Database.closeDatabase(conn);
+
+        return accountsFromDB;
+    }
+
     @FXML
     public void toggleVisiblePassword(CheckBox checkBox, TextField textField, PasswordField passwordField) {
         if (checkBox.isSelected()) {
@@ -734,20 +786,4 @@ public class Controller implements Initializable {
         passwordField2.setVisible(true);
         textField2.setVisible(false);
     }
-
-
-
-    private void copyToClipboard(AccountInfo accountInfo) {
-        if (accountInfo.getName() != null) {
-            StringSelection stringSelection = new StringSelection(accountInfo.getPassword());
-            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-            clipboard.setContents(stringSelection, null);
-        } else {
-            String alertHeader = "Zwischenablage";
-            String alertContent = "Bitte wähle einen Eintrag aus";
-            System.out.println(alertContent);
-            Popup.showAlert(alertHeader, alertContent, Alert.AlertType.WARNING);
-        }
-    }
-
 }

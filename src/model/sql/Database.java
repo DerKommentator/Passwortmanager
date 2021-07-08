@@ -1,9 +1,15 @@
 package model.sql;
 
+import javafx.scene.control.Alert;
+import model.datenstruktur.AccountInfo;
+import utils.Popup;
+
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class Database {
     public static Connection createDatabaseConnection(String filePath) {
@@ -27,6 +33,13 @@ public class Database {
 
         String url = String.format("jdbc:sqlite:%s", filePath);
         Connection conn = null;
+
+        File database = new File(filePath);
+        if (!database.exists()) {
+            Popup.showAlert("User", "Datenbank von " + username + " konnte nicht geöffnet werden!", Alert.AlertType.ERROR);
+            return null;
+        }
+
         try {
             conn = DriverManager.getConnection(url, username, password);
 
@@ -42,6 +55,10 @@ public class Database {
     }
 
     public static void closeDatabase(Connection conn) {
+        if (conn == null) {
+            System.out.println("conn is null. Exit");
+            return;
+        }
         try {
             conn.close();
         } catch (SQLException e) {
