@@ -5,23 +5,27 @@ Used to store passwords, so that they no longer have to be written on a piece of
 
 A database is created for all registered users and a database for each user with their password entries.
 
+## Libraries: 
 JDBC driver to encrypt databases: [sqlite-jdbc-crypt](https://github.com/Willena/sqlite-jdbc-crypt)
 
-## Registration:
+Used JavaFX 16: [JavaFX](https://gluonhq.com/products/javafx/)
+
+## Screenshots:
+### Registration:
 ![Registration](docs/Registration.png)
 
 
-## Login:
+### Login:
 ![Login](docs/Login.png)
 
 
-## Dashboard:
+### Dashboard:
 ![Dashboard](docs/Dashboard.png)
 
 
-## Edit an entry:
+### Edit an entry:
 ![Edit an entry](docs/Edit.png)
 
 
-## User Settings:
+### User Settings:
 ![User Settings](docs/Settings.png)
